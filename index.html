@@ -16,9 +16,9 @@
 <meta name="twitter:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
 <style>
   :root{
-    --bg:#171614; --raised:#1e1c1a; --elev:#252220; --line:#33302c; --line-soft:#262421;
-    --disp:#d6d2c9; --ink:#bcb7ac; --dim:#8a857b; --faint:#565349;
-    --acc:#b0563c; --acc-soft:rgba(176,86,60,.14); --ok:#7d9a6a;
+    --bg:#12151c; --raised:#181d27; --elev:#202634; --line:#2c3446; --line-soft:#222939;
+    --disp:#dfe3ec; --ink:#b7bfce; --dim:#828b9d; --faint:#525a6b;
+    --acc:#d9804f; --acc-soft:rgba(217,128,79,.14); --ok:#7fa477;
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
     --mono:ui-monospace,Menlo,Consolas,monospace;
   }
@@ -77,10 +77,10 @@
   .spread p code{font-family:var(--mono);font-size:.78rem;color:var(--ink)}
   .tags{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
   .tags span{font:600 9.5px/1 var(--mono);letter-spacing:.05em;border:1px solid var(--line);padding:4px 8px;color:var(--dim)}
-  .tags .hot{border-color:rgba(176,86,60,.55);color:var(--acc)}
+  .tags .hot{border-color:rgba(217,128,79,.55);color:var(--acc)}
   .spread .side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
   .badge{font:700 9px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;padding:5px 10px}
-  .badge.live{background:var(--acc-soft);color:var(--acc);border:1px solid rgba(176,86,60,.4)}
+  .badge.live{background:var(--acc-soft);color:var(--acc);border:1px solid rgba(217,128,79,.4)}
   .badge.soon{border:1px solid var(--line);color:var(--faint)}
   .read{font:600 10.5px/1 var(--mono);letter-spacing:.04em;color:var(--ink);border-bottom:1px solid var(--acc);padding-bottom:2px}
   .read:hover{color:var(--disp)}
@@ -241,7 +241,7 @@
   .iterm-out { padding-left: 0; white-space: pre-wrap; color: #888; margin-bottom: 4px; }
   .iterm-out.green  { color: #28ca42; }
   .iterm-out.yellow { color: #ffbd2e; }
-  .iterm-out.red    { color: #b0563c; }
+  .iterm-out.red    { color: #d9804f; }
   .iterm-out.dim    { color: #555; }
   .iterm-out.white  { color: #e8e8e8; }
 
@@ -361,11 +361,11 @@
   }
 
   .leg-line { display: inline-block; width: 20px; height: 2px; }
-  .leg-line.xbar { background: #a8a294; }
-  .leg-line.cl   { background: #7d9a6a; }
-  .leg-line.ucl  { background: #b0563c; }
-  .leg-line.usl  { background: #8a857b; }
-  .leg-ooc { width: 8px; height: 8px; border-radius: 50%; background: #b0563c; }
+  .leg-line.xbar { background: #aeb5c2; }
+  .leg-line.cl   { background: #7fa477; }
+  .leg-line.ucl  { background: #d9804f; }
+  .leg-line.usl  { background: #828b9d; }
+  .leg-ooc { width: 8px; height: 8px; border-radius: 50%; background: #d9804f; }
 
   .demo-source {
     font-family: var(--font-mono);
@@ -455,7 +455,7 @@
   .p-modal-close:hover { color: var(--text-primary); }
   .p-modal-tag {
     font-family: var(--font-mono); font-size: 0.7rem;
-    color: #b0563c; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #d9804f; text-transform: uppercase; letter-spacing: 0.08em;
   }
   .p-modal-title {
     font-size: 1.5rem; font-weight: 700;
@@ -505,7 +505,7 @@
   }
   .sim-params-title {
     font-family: var(--font-mono); font-size: 0.7rem;
-    color: #b0563c; text-transform: uppercase;
+    color: #d9804f; text-transform: uppercase;
     letter-spacing: 0.06em; margin-bottom: 12px;
   }
   .sim-param-grid {
@@ -524,7 +524,7 @@
   }
   .sim-slider-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 100px; }
   .sim-slider-group label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-secondary); }
-  .sim-slider-group input[type=range] { width: 100%; accent-color: #b0563c; }
+  .sim-slider-group input[type=range] { width: 100%; accent-color: #d9804f; }
   /* placeholder modal */
   .sim-placeholder {
     text-align: center; padding: 60px 20px;
@@ -535,12 +535,12 @@
   .p-card-sim-btn {
     display: inline-flex; align-items: center; gap: 6px;
     font-family: var(--font-mono); font-size: 0.72rem;
-    color: #b0563c; cursor: pointer;
-    background: none; border: 1px solid #b0563c;
+    color: #d9804f; cursor: pointer;
+    background: none; border: 1px solid #d9804f;
     border-radius: 4px; padding: 4px 10px;
     transition: background 0.15s, color 0.15s; margin-top: 4px;
   }
-  .p-card-sim-btn:hover { background: #b0563c; color: #000; }
+  .p-card-sim-btn:hover { background: #d9804f; color: #000; }
 
   /* Theory panel */
   .sim-theory {
@@ -567,7 +567,7 @@
   .sim-theory-body.open { display: block; }
   .myrio-tabs { display:flex; gap:6px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px; flex-wrap:wrap; }
   .myrio-tab { background:none; border:none; border-bottom:2px solid transparent; color:var(--text-secondary); padding:5px 14px; font-family:var(--font-mono); font-size:0.73rem; cursor:pointer; margin-bottom:-11px; transition:color 0.15s, border-color 0.15s; }
-  .myrio-tab.active { color:var(--text-primary); border-bottom-color:#b0563c; }
+  .myrio-tab.active { color:var(--text-primary); border-bottom-color:#d9804f; }
   .myrio-tab:hover:not(.active) { color:var(--text-primary); }
   .sim-theory-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
@@ -575,7 +575,7 @@
   @media (max-width: 620px) { .sim-theory-grid { grid-template-columns: 1fr; } }
   .sim-theory-col h4 {
     font-family: var(--font-mono); font-size: 0.7rem;
-    color: #b0563c; text-transform: uppercase; letter-spacing: 0.06em;
+    color: #d9804f; text-transform: uppercase; letter-spacing: 0.06em;
     margin: 0 0 10px;
   }
   .sim-eq {
@@ -934,10 +934,10 @@
         <canvas id="msa-chart"></canvas>
       </div>
       <div class="demo-legend">
-        <span class="leg-item"><span class="leg-line" style="background:#a8a294"></span>EV (Repeatability)</span>
-        <span class="leg-item"><span class="leg-line" style="background:#b0563c"></span>AV (Reproducibility)</span>
-        <span class="leg-item"><span class="leg-line" style="background:#7d9a6a;height:1px;border-top:2px dashed #7d9a6a;background:none"></span>10% threshold</span>
-        <span class="leg-item"><span class="leg-line" style="background:none;border-top:2px dashed #b0563c;height:1px"></span>30% threshold</span>
+        <span class="leg-item"><span class="leg-line" style="background:#aeb5c2"></span>EV (Repeatability)</span>
+        <span class="leg-item"><span class="leg-line" style="background:#d9804f"></span>AV (Reproducibility)</span>
+        <span class="leg-item"><span class="leg-line" style="background:#7fa477;height:1px;border-top:2px dashed #7fa477;background:none"></span>10% threshold</span>
+        <span class="leg-item"><span class="leg-line" style="background:none;border-top:2px dashed #d9804f;height:1px"></span>30% threshold</span>
       </div>
       <span class="demo-source">Data source: <a href="https://msa.amohdnaw.xyz/api/demo" target="_blank">msa.amohdnaw.xyz/api/demo</a> · live fetch on page load</span>
     </div>
@@ -1314,17 +1314,17 @@
         data: {
           labels: d.subgroups.map(sg => 'SG' + sg.idx),
           datasets: [
-            { label: 'USL', data: flat(d.usl), borderColor: '#8a857b', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
-            { label: 'LSL', data: flat(d.lsl), borderColor: '#8a857b', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
-            { label: 'UCL', data: flat(d.ucl), borderColor: '#b0563c', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
-            { label: 'LCL', data: flat(d.lcl), borderColor: '#b0563c', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
-            { label: 'CL',  data: flat(d.cl),  borderColor: '#7d9a6a', borderWidth: 1.5, pointRadius: 0, order: 2 },
+            { label: 'USL', data: flat(d.usl), borderColor: '#828b9d', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
+            { label: 'LSL', data: flat(d.lsl), borderColor: '#828b9d', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
+            { label: 'UCL', data: flat(d.ucl), borderColor: '#d9804f', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
+            { label: 'LCL', data: flat(d.lcl), borderColor: '#d9804f', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
+            { label: 'CL',  data: flat(d.cl),  borderColor: '#7fa477', borderWidth: 1.5, pointRadius: 0, order: 2 },
             {
               label: 'X̄',
               data: d.subgroups.map(sg => sg.xbar),
-              borderColor: '#a8a294', borderWidth: 2, tension: 0.25, order: 1,
-              pointBackgroundColor: violations.map(v => v ? '#b0563c' : '#a8a294'),
-              pointBorderColor:     violations.map(v => v ? '#b0563c' : '#a8a294'),
+              borderColor: '#aeb5c2', borderWidth: 2, tension: 0.25, order: 1,
+              pointBackgroundColor: violations.map(v => v ? '#d9804f' : '#aeb5c2'),
+              pointBorderColor:     violations.map(v => v ? '#d9804f' : '#aeb5c2'),
               pointRadius:          violations.map(v => v ? 7 : 4),
               pointHoverRadius:     violations.map(v => v ? 9 : 6),
             }
@@ -1380,7 +1380,7 @@
       // Bar chart: EV, AV, GR&R components as horizontal bars with threshold lines
       const labels = ['EV (Repeatability)', 'AV (Reproducibility)', 'GR&R Total'];
       const values = [d.ev_pct, d.av_pct, d.grr_pct];
-      const colors = ['#a8a294', '#b0563c', '#6f6a5e'];
+      const colors = ['#aeb5c2', '#d9804f', '#5f6675'];
 
       new Chart(document.getElementById('msa-chart').getContext('2d'), {
         type: 'bar',
@@ -1396,8 +1396,8 @@
               borderRadius: 4,
               barThickness: 32,
             },
-            { label: 'Acceptable (10%)', data: [10, 10, 10], type: 'line', borderColor: '#7d9a6a', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
-            { label: 'Marginal (30%)',   data: [30, 30, 30], type: 'line', borderColor: '#b0563c', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
+            { label: 'Acceptable (10%)', data: [10, 10, 10], type: 'line', borderColor: '#7fa477', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
+            { label: 'Marginal (30%)',   data: [30, 30, 30], type: 'line', borderColor: '#d9804f', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
           ]
         },
         options: {
@@ -1455,7 +1455,7 @@
 
   /* ── CONSOLE EASTER EGG ──────────────────────────────────── */
   (function () {
-    const s = 'color:#b0563c;font-size:20px;font-weight:bold;font-family:monospace;padding:2px 6px;';
+    const s = 'color:#d9804f;font-size:20px;font-weight:bold;font-family:monospace;padding:2px 6px;';
     const m = 'color:#999;font-size:11px;font-family:monospace;';
     const g = 'color:#28ca42;font-family:monospace;font-size:11px;';
     const d = 'color:#555;font-family:monospace;font-size:11px;';
@@ -1916,8 +1916,8 @@ Try:
     /* ── controller block diagram helpers ─────────────────────── */
     function _diagBlock(ctx, x, y, w, h, label, sub) {
       ctx.save();
-      ctx.fillStyle = '#b0563c22'; ctx.fillRect(x, y, w, h);
-      ctx.strokeStyle = '#b0563c'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = '#d9804f22'; ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = '#d9804f'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       if (sub) {
         ctx.fillStyle = '#e8eaed'; ctx.font = 'bold 10px monospace';
@@ -1968,7 +1968,7 @@ Try:
 
       /* Summing junction */
       ctx.save();
-      ctx.strokeStyle = '#b0563c'; ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#d9804f'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(sumCX, cy, sumR, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = '#8ab4f8'; ctx.font = 'bold 13px monospace';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -3250,7 +3250,7 @@ Try:
       if (cpk >= 1.67) return '#28ca42';
       if (cpk >= 1.33) return '#4CAF50';
       if (cpk >= 1.00) return '#f59e0b';
-      return '#b0563c';
+      return '#d9804f';
     }
     function cpkVerdict(cpk) {
       if (cpk >= 2.00) return 'World Class';
@@ -3286,7 +3286,7 @@ Try:
     if (msaBack) {
       fetch('https://msa.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
         const ok = d.grr_pct <= 10;
-        const col = ok ? '#28ca42' : (d.grr_pct <= 30 ? '#f59e0b' : '#b0563c');
+        const col = ok ? '#28ca42' : (d.grr_pct <= 30 ? '#f59e0b' : '#d9804f');
         msaBack.innerHTML = `
           <div class="live-stat-row">
             <div class="live-stat">
@@ -3294,7 +3294,7 @@ Try:
               <span class="live-stat-label">GR&amp;R</span>
             </div>
             <div class="live-stat">
-              <span class="live-stat-val" style="color:#b0563c">${d.ndc}</span>
+              <span class="live-stat-val" style="color:#d9804f">${d.ndc}</span>
               <span class="live-stat-label">NDC</span>
             </div>
           </div>
@@ -3315,8 +3315,8 @@ Try:
   /* ── CPK 2048 ────────────────────────────────────────────── */
   (function () {
     const CPK = {
-      2:  { label: 'Cpk 0.33', sub: 'Out of Spec', color: '#b0563c' },
-      4:  { label: 'Cpk 0.67', sub: 'Marginal',    color: '#b0563c' },
+      2:  { label: 'Cpk 0.33', sub: 'Out of Spec', color: '#d9804f' },
+      4:  { label: 'Cpk 0.67', sub: 'Marginal',    color: '#d9804f' },
       8:  { label: 'Cpk 1.00', sub: 'Minimum',     color: '#FF9800' },
       16: { label: 'Cpk 1.33', sub: 'Capable',     color: '#f59e0b' },
       32: { label: 'Cpk 1.67', sub: 'Excellent',   color: '#4CAF50' },
@@ -3355,7 +3355,7 @@ Try:
         const cell = document.createElement('div');
         cell.className = 'cpk-cell';
         if (val) {
-          const info = CPK[val] || { label: String(val), sub: '···', color: '#a8a294' };
+          const info = CPK[val] || { label: String(val), sub: '···', color: '#aeb5c2' };
           cell.style.background = info.color + '18';
           cell.style.borderColor = info.color + '55';
           const vEl = document.createElement('span');
