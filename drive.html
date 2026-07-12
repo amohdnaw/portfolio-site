@@ -3,7 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ammar Nawawi — drive the Sheepdog (prototype)</title>
+<title>Drive the Sheepdog — Ammar Nawawi</title>
+<meta name="description" content="Drive my 2017 control-systems robot — real PI controllers, real transfer functions — through a world that is one big control chart.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Drive the Sheepdog — a portfolio you can play">
+<meta property="og:description" content="My college robot, rebuilt with its real transfer functions. Seven stations to find. The road is a control chart.">
+<meta property="og:url" content="https://portfolio.amohdnaw.xyz/drive.html">
+<meta property="og:image" content="https://portfolio.amohdnaw.xyz/og-drive.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://portfolio.amohdnaw.xyz/og-drive.png">
 <style>
   :root{--bg:#12151c;--ink:#dfe3ec;--dim:#828b9d;--acc:#d9804f;--ok:#7fa477;
     --mono:ui-monospace,Menlo,Consolas,monospace;--serif:"Iowan Old Style","Palatino Linotype",Georgia,serif}
@@ -36,7 +45,7 @@
 </style>
 </head>
 <body>
-<div class="hud" id="title"><b>AMMAR NAWAWI</b><span>process engineer · builder · drive to explore · prototype — world under construction</span></div>
+<div class="hud" id="title"><b>AMMAR NAWAWI</b><span>process engineer · builder · drive to explore</span></div>
 <a class="hud" id="skip" href="/">skip — just show me the work</a>
 <div class="hud" id="controls"><b>W A S D</b> or arrows to drive · <b>M</b> sound · <b>U</b> untuned mode</div>
 <div class="hud" id="found" style="bottom:44px;left:22px;font-size:11px;color:var(--acc);letter-spacing:.08em">stations found 0/7</div>
@@ -44,7 +53,6 @@
 <div id="card"><h3 id="card-t"></h3><p id="card-p"></p></div>
 <div id="joy"><div class="nub" id="nub"></div></div>
 
-<script>window.__err=null;window.onerror=(m,src,l,c)=>{window.__err=m+" @"+l+":"+c;};</script>
 <script type="module">
 import * as THREE from './vendor/three.module.js';
 
@@ -304,7 +312,6 @@ function tick(){
   requestAnimationFrame(tick);
 }
 tick();
-window.__dbg=()=>JSON.stringify({X:+X.toFixed(1),Z:+Z.toFixed(1),vL:+vL.toFixed(2),cam:cam.position.toArray().map(n=>+n.toFixed(1)),kids:scene.children.length});
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);});
 </script>
 </body>

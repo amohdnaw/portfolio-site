@@ -3,192 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ammar Nawawi — Process Engineer (SPC)</title>
+<title>The Bench — Ammar Nawawi</title>
+<meta name="description" content="Live instruments: real SPC data, a gauge-study readout, a working terminal, and two control-theory simulations from Purdue.">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<meta name="description" content="Evidence, not claims — every number links to a live system or a runnable notebook. SPC at production scale, honest inference, live systems.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Ammar Nawawi — evidence, not claims">
-<meta property="og:description" content="Process Engineer (SPC), Penang. Every number on this page links to a live system or a runnable notebook. 1,578 trades audited — edge disproven, published anyway.">
-<meta property="og:url" content="https://portfolio.amohdnaw.xyz/">
-<meta property="og:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
 <style>
+  @font-face{font-family:'Fraunces';src:url('fonts/fraunces-650.woff2') format('woff2');font-weight:650;font-display:swap}
   :root{
-    --bg:#12151c; --raised:#181d27; --elev:#202634; --line:#2c3446; --line-soft:#222939;
-    --disp:#dfe3ec; --ink:#b7bfce; --dim:#828b9d; --faint:#525a6b;
-    --acc:#d9804f; --acc-soft:rgba(217,128,79,.14); --ok:#7fa477;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --paper:#faf9f4; --ink:#1d1c19; --soft:#4c4a44; --dim:#807d74; --acc:#c05f2e; --ok:#3f7a4e;
+    --hair:#dedbd0;
+    --sans:"Avenir Next","Segoe UI",Verdana,-apple-system,sans-serif;
     --mono:ui-monospace,Menlo,Consolas,monospace;
+    /* legacy component aliases → v3 light */
+    --bg:#faf9f4; --bg-raised:#ffffff; --bg-elevated:#f1efe7; --border:#dedbd0;
+    --text-display:#1d1c19; --text-primary:#4c4a44; --text-secondary:#807d74; --text-disabled:#b5b1a4;
+    --red:#c05f2e; --green:#3f7a4e; --amber:#b08d4a;
+    --font-body:var(--sans); --font-mono:var(--mono); --font-doto:'Fraunces',Georgia,serif;
+    --space-4:4px; --space-8:8px; --space-16:16px; --space-32:32px; --space-48:48px; --space-64:64px; --space-96:96px;
+    --dot-color:transparent;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font:15.5px/1.65 var(--serif)}
-  a{color:var(--acc);text-decoration:none}
-  .wrap{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,36px)}
-  .k{font:600 10px/1.7 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
-  .k b{color:var(--ink);font-weight:600}
-  ::selection{background:var(--acc);color:var(--bg)}
-
-  nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);z-index:50}
-  nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:15px;padding-bottom:15px;gap:12px;flex-wrap:wrap}
-  nav .id{font:600 12px/1 var(--mono);letter-spacing:.06em;color:var(--disp)}
-  nav .id span{color:var(--acc)}
-  nav .links{display:flex;gap:20px;font:600 9.5px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;flex-wrap:wrap}
-  nav .links a{color:var(--dim)}
-  nav .links a:hover{color:var(--disp)}
-
-  header.hero{padding:84px 0 60px;border-bottom:1px solid var(--line)}
-  .otw{display:inline-flex;align-items:center;gap:8px;font:600 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
-    color:var(--ok);border:1px solid var(--line);padding:7px 13px;margin:20px 0 14px}
-  .otw::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
-  h1{font-size:clamp(44px,7vw,62px);line-height:1;letter-spacing:-.02em;color:var(--disp);font-weight:600}
-  .lede{margin-top:16px;font-size:17.5px;line-height:1.65;font-style:italic;color:var(--dim);max-width:33em}
-  .lede b{color:var(--ink);font-style:normal;font-weight:600}
-  .acts{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
-  .acts a{font:700 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:13px 19px}
-  .acts a.p{background:var(--acc);color:#1a1410}
-  .acts a.p:hover{background:#c26547}
-  .acts a.g{border:1px solid var(--line);color:var(--dim)}
-  .acts a.g:hover{color:var(--disp);border-color:var(--faint)}
-  .hero-feature{margin-top:26px;font:600 12.5px/1.7 var(--mono);display:flex;flex-direction:column;gap:6px}
-  .hero-feature a{color:var(--ink);border-bottom:1px solid var(--acc);padding-bottom:2px;width:max-content;max-width:100%}
-  .hero-feature a span{color:var(--acc)}
-  .hero-feature .pulse{color:var(--dim);font-size:11px;letter-spacing:.04em}
-  .hero-feature .pulse b{color:var(--ok)}
-  .hero-feature .pulse::first-letter{color:var(--ok)}
-  .heronums{display:flex;gap:0;border:1px solid var(--line);background:var(--raised);margin-top:40px;max-width:640px}
-  .heronums div{flex:1;padding:14px 18px;border-right:1px solid var(--line-soft)}
-  .heronums div:last-child{border-right:0}
-  .heronums b{font:700 21px/1.35 var(--mono);color:var(--disp);display:block}
-  .heronums small{font:600 8.5px/1.6 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-
-  section.chap{padding:64px 0;border-bottom:1px solid var(--line)}
-  .opener{font-size:clamp(26px,4vw,36px);letter-spacing:-.012em;color:var(--disp);font-weight:600;margin:8px 0 34px}
-  .chap-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
-
-  .spread{display:grid;grid-template-columns:60px 1fr 180px;gap:22px;padding:24px 0;border-top:1px solid var(--line-soft)}
-  .spread:first-of-type{border-top:2px solid var(--faint)}
-  .spread .no{font:400 40px/1 var(--serif);color:var(--acc)}
-  .spread.soon .no{color:var(--faint)}
-  .spread h3{font-size:19.5px;line-height:1.3;color:var(--disp);font-weight:600;margin-bottom:7px}
-  .spread p{font-size:.92rem;color:var(--dim);max-width:36em}
-  .spread p code{font-family:var(--mono);font-size:.78rem;color:var(--ink)}
-  .tags{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
-  .tags span{font:600 9.5px/1 var(--mono);letter-spacing:.05em;border:1px solid var(--line);padding:4px 8px;color:var(--dim)}
-  .tags .hot{border-color:rgba(217,128,79,.55);color:var(--acc)}
-  .spread .side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-  .badge{font:700 9px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;padding:5px 10px}
-  .badge.live{background:var(--acc-soft);color:var(--acc);border:1px solid rgba(217,128,79,.4)}
-  .badge.soon{border:1px solid var(--line);color:var(--faint)}
-  .read{font:600 10.5px/1 var(--mono);letter-spacing:.04em;color:var(--ink);border-bottom:1px solid var(--acc);padding-bottom:2px}
-  .read:hover{color:var(--disp)}
-  .sidestat b{font:700 19px/1.3 var(--mono);color:var(--disp);display:block}
-  .sidestat small{font:600 8.5px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-
-  .slice-note{padding:26px 0 60px;text-align:center;font:600 10px/1.8 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
-
-  @media(max-width:700px){
-    .spread{grid-template-columns:40px 1fr}
-    .spread .side{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start}
-    .heronums{flex-wrap:wrap}
-    .heronums div{flex:1 1 45%}
-  }
-
-  /* legacy component aliases → v2 tokens */
-  :root{
-    --bg-raised:var(--raised); --bg-elevated:var(--elev); --border:var(--line);
-    --text-display:var(--disp); --text-primary:var(--ink); --text-secondary:var(--dim);
-    --text-disabled:var(--faint); --red:var(--acc); --green:var(--ok); --amber:#b08d4a;
-    --font-body:var(--serif); --font-mono:var(--mono); --font-doto:var(--serif);
-    --dot-color:transparent;
-    --space-4:4px; --space-8:8px; --space-16:16px; --space-32:32px; --space-48:48px; --space-64:64px; --space-96:96px;
-  }
-  /* calm the ported sections inside chapters */
+  body{background:var(--paper);color:var(--soft);font:16.5px/1.7 var(--sans)}
+  ::selection{background:var(--acc);color:#fff}
+  .col{max-width:860px;margin:0 auto;padding:44px 24px 90px}
+  .crumb{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+  .crumb a{color:var(--dim);text-decoration:none;border-bottom:1px solid var(--hair)}
+  .crumb a:hover{color:var(--acc)}
+  h1{font:650 38px/1.1 'Fraunces',Georgia,serif;color:var(--ink);margin:18px 0 8px}
+  .lede{color:var(--dim);margin-bottom:40px;max-width:38em}
+  h2.bench-h{font:650 22px/1.2 'Fraunces',Georgia,serif;color:var(--ink);margin:52px 0 6px}
+  .bench-sub{color:var(--dim);font-size:14px;margin-bottom:18px}
+  section{padding:0}
+  .section-label,.section-title,.section-sub{display:none}
   #terminal,#demo{padding:0;border:0;background:none}
-  #terminal .section-label,#terminal .section-title,#terminal .section-sub,
-  #demo .section-label,#demo .section-title,#demo .section-sub{display:none}
-  .bench-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
-  .bench-grid > *{min-width:0}
-  .bench-full{grid-column:1/-1}
-  .sim-tile{border:1px solid var(--line);background:var(--raised);padding:18px;cursor:pointer}
-  .sim-tile:hover{border-color:var(--faint)}
-  .sim-tile h4{font:600 10px/1.6 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
-  .sim-tile p{font-size:.85rem;color:var(--dim)}
-  .sim-tile .go{font:600 10px/2.4 var(--mono);color:var(--ink)}
-  .worktbl{width:100%;border-collapse:collapse;font-size:.9rem}
-  .worktbl th{font:600 9.5px/1.5 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--dim);text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
-  .worktbl td{padding:11px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
-  .worktbl td:first-child{color:var(--disp);font-weight:600;white-space:nowrap}
-  .worktbl td.mono{font-family:var(--mono);font-size:.74rem;color:var(--dim);white-space:nowrap}
-  .worktbl .sub{display:block;font-size:.78rem;color:var(--dim);font-weight:400;white-space:normal}
-  .tblwrap{overflow-x:auto}
-  .jrow{display:grid;grid-template-columns:190px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--line-soft)}
-  .jrow:first-of-type{border-top:2px solid var(--faint)}
-  .jrow .when{font:600 10px/1.8 var(--mono);letter-spacing:.08em;color:var(--dim)}
-  .jrow h3{font-size:16.5px;color:var(--disp);margin-bottom:2px}
-  .jrow .co{font:600 11px/1.8 var(--mono);color:var(--acc)}
-  .jrow p{font-size:.88rem;color:var(--dim);margin-top:6px}
-  .bg-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:36px}
-  .bg-grid h3{font-size:16px;color:var(--disp);margin-bottom:2px}
-  .bg-grid .co{font:600 10.5px/1.8 var(--mono);color:var(--dim)}
-  .bg-grid p{font-size:.85rem;color:var(--dim);margin:6px 0 18px}
-  .skills2{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
-  .skills2 h4{font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
-  .skills2 li{list-style:none;font-size:.88rem;padding:6px 0;border-bottom:1px solid var(--line-soft);color:var(--ink)}
-  .flowstrip{display:flex;gap:0;border:1px solid var(--line);background:var(--raised);margin-top:30px;flex-wrap:wrap}
-  .flowstrip div{flex:1 1 200px;padding:14px 16px;border-right:1px solid var(--line-soft)}
-  .flowstrip div:last-child{border-right:0}
-  .flowstrip i{font:600 10px/1 var(--mono);color:var(--acc);font-style:normal}
-  .flowstrip b{display:block;font-size:.92rem;color:var(--disp);margin:6px 0 2px}
-  .flowstrip p{font-size:.78rem;color:var(--dim)}
-  footer{padding:56px 0 70px}
-  footer .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
-  footer .talk{font-size:30px;font-weight:600;color:var(--disp)}
-  footer .meta{font:12px/2 var(--mono);color:var(--dim);text-align:right}
-  footer .meta a{color:var(--ink);border-bottom:1px solid var(--acc)}
-  @media(max-width:760px){.bench-grid{grid-template-columns:1fr}.jrow{grid-template-columns:1fr;gap:4px}.bg-grid{grid-template-columns:1fr}}
-  @media(max-width:700px){
-    nav .wrap{padding-top:10px;padding-bottom:10px;row-gap:6px}
-    nav .links{gap:11px;font-size:8.5px;letter-spacing:.1em}
-    nav .id{font-size:10.5px}
-    .worktbl tr:first-child{display:none}
-    .worktbl,.worktbl tbody,.worktbl tr,.worktbl td{display:block;width:100%}
-    .worktbl tr{border:1px solid var(--line-soft);border-top:0;padding:16px 16px 14px}
-    .worktbl tr:nth-child(2){border-top:1px solid var(--line-soft)}
-    .worktbl td{border:0;padding:0;white-space:normal}
-    .worktbl td:first-child{font-size:16.5px;margin-bottom:6px}
-    .worktbl td.mono{display:inline-block;width:auto;margin-top:10px;padding-right:16px;white-space:nowrap}
-  }
-    transition: opacity 400ms ease-out;
-  }
-  #rotator-text.fading { opacity: 0; }
-
-  #float-term-btn {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 1000;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 7px 14px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--bg-raised);
-    color: var(--text-disabled);
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms, color 150ms, border-color 150ms, background 300ms;
-  }
-  #float-term-btn.visible { opacity: 1; pointer-events: auto; }
-  #float-term-btn:hover { color: var(--text-primary); border-color: var(--text-disabled); }
-
-  /* ── INTERACTIVE TERMINAL ────────────────────────────────── */
+  .sims{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .sim-tile{border:1px solid var(--hair);border-left:4px solid var(--acc);background:#fffef9;padding:18px;cursor:pointer}
+  .sim-tile:hover{background:#fbeadd}
+  .sim-tile h4{font:600 11px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+  .sim-tile p{font-size:.9rem;color:var(--dim)}
+  .sim-tile .go{font:600 12px/2.2 var(--mono);color:var(--ink)}
+  .arcade{border:1px solid var(--hair);background:#1b1622;color:#cfd6cf;padding:18px;cursor:pointer}
+  .arcade h4{font:600 11px/1.6 var(--mono);letter-spacing:.1em;color:#36f28f;text-transform:uppercase;margin-bottom:6px}
+  .arcade p{font-size:.9rem;color:#8f978f}
+  #scroll-progress,#back-to-top,#float-term-btn,#hamburger{display:none!important}
+  @media(max-width:700px){.sims{grid-template-columns:1fr}}
+/* ── ported: INTERACTIVE TERMINAL ── */
   .iterm-window {
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -275,7 +133,7 @@
     margin-top: var(--space-8);
   }
 
-  /* ── SPC DEMO ────────────────────────────────────────────── */
+/* ── ported: SPC DEMO ── */
   .demo-card {
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -395,29 +253,7 @@
     transition: width 60ms linear;
   }
 
-  /* ── BACK TO TOP ──────────────────────────────────────────── */
-  #back-to-top {
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
-    z-index: 1000;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-disabled);
-    border: 1px solid var(--border);
-    background: var(--bg-raised);
-    padding: 7px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms, color 150ms, border-color 150ms, background 300ms;
-  }
-
-  /* ── PROJECT MODAL ───────────────────────────────────────── */
+/* ── ported: PROJECT MODAL ── */
   .p-modal-overlay {
     position: fixed; inset: 0; z-index: 1000;
     background: rgba(0,0,0,0.82);
@@ -591,57 +427,7 @@
   }
   .sim-theory-note strong { color: var(--text-primary); }
 
-  /* ── FLOW PIPELINE ───────────────────────────────────────── */
-  .flow-pipeline {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
-    gap: var(--space-16);
-    align-items: start;
-  }
-  .flow-step {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: var(--space-16);
-    background: var(--bg-raised);
-  }
-  .flow-num {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: var(--red);
-    letter-spacing: 0.12em;
-    margin-bottom: 6px;
-  }
-  .flow-title {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    letter-spacing: 0.04em;
-  }
-  .flow-desc {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    font-weight: 300;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 0 0 8px 0;
-  }
-  .flow-tag {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: var(--text-disabled);
-    letter-spacing: 0.08em;
-  }
-  .flow-arrow {
-    align-self: center;
-    font-family: var(--font-mono);
-    color: var(--text-disabled);
-    font-size: 1.1rem;
-    padding-top: 8px;
-  }
-
-  /* ── CPK 2048 MODAL ──────────────────────────────────────── */
+/* ── ported: CPK 2048 MODAL ── */
   .cpk2048-overlay {
     position: fixed; inset: 0; z-index: 9000;
     background: rgba(0,0,0,0.82);
@@ -775,99 +561,19 @@
   }
 
 
+
 </style>
 </head>
 <body>
+<div class="col">
+  <p class="crumb"><a href="/">← ammar nawawi</a> · the bench</p>
+  <h1>The Bench</h1>
+  <p class="lede">Live instruments, not screenshots — this page talks to the same systems my write-ups
+  are about. Real fetches, sample fallback, no login.</p>
 
-<nav><div class="wrap">
-  <span class="id">AMMAR NAWAWI <span>/</span> PROCESS ENGINEER (SPC)</span>
-  <span class="links" id="navLinks"><a href="#evidence">Evidence</a><a href="#bench">The Bench</a><a href="#work">Work</a><a href="#journey">Journey</a><a href="#background">Background</a><a href="#contact">Contact</a></span>
-</div></nav>
-
-<header class="hero"><div class="wrap">
-  <p class="k">Process Engineering · 6+ years · <b>semiconductor assembly &amp; test</b> · Penang, MY</p>
-  <div class="otw">Open to work</div>
-  <h1>Ammar Nawawi.</h1>
-  <p class="lede">Statistics as instrumentation, not decoration — six years turning noisy production
-  data into decisions, and <b>publishing when the data says no</b>. Every claim on this page links
-  to a live system or a runnable notebook.</p>
-  <div class="acts">
-    <a class="p" href="https://amohdnaw.github.io/case-studies/" target="_blank">Read the case studies</a>
-    <a class="g" href="/cv-ammar-nawawi.pdf" target="_blank">CV</a>
-    <a class="g" href="https://linkedin.com/in/aammarmnawawi/" target="_blank">LinkedIn</a>
-    <a class="g" href="https://github.com/amohdnaw" target="_blank">GitHub</a>
-    <a class="g" href="mailto:ammar.mnawawi@gmail.com">Email</a>
-  </div>
-  <div class="hero-feature">
-    <a href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">
-      Latest — “I audited my own trading system — and killed my best result” <span>→ read</span></a>
-    <span class="pulse" id="hero-pulse" hidden>● live now · Cpk <b id="hero-pulse-cpk">—</b> on the demo channel · 15,000 characteristics under watch</span>
-  </div>
-  <div class="heronums">
-    <div><b class="stat-value">15,000</b><small>characteristics monitored</small></div>
-    <div><b class="stat-value">1,578</b><small>trades audited — edge disproven</small></div>
-    <div><b class="stat-value">4</b><small>systems in production</small></div>
-    <div><b class="stat-value">10+</b><small>engineers using them daily</small></div>
-  </div>
-</div></header>
-
-<section class="chap" id="evidence"><div class="wrap">
-  <div class="chap-head">
-    <div><p class="k">01 — Evidence</p>
-    <h2 class="opener">Published, even when the answer was no.</h2></div>
-    <a class="k" href="https://amohdnaw.github.io/case-studies/" target="_blank" style="color:var(--acc)">amohdnaw.github.io/case-studies ↗</a>
-  </div>
-
-  <article class="spread">
-    <div class="no">I</div>
-    <div>
-      <h3>I audited my own trading system — and killed my best result</h3>
-      <p>A paper-trading log showed <code>+0.48%/trade</code> and a naive bootstrap called it
-      significant. Day-clustered inference, an always-long baseline on identical instances, and a
-      confidence score at <code>r&nbsp;=&nbsp;−0.015</code> said otherwise — an honest null result,
-      with the runnable notebook and the full trade log attached.</p>
-      <div class="tags"><span class="hot">CI includes 0</span><span>day-clustered bootstrap</span><span>runnable notebook</span></div>
-    </div>
-    <div class="side">
-      <span class="badge live">Live</span>
-      <span class="sidestat"><b>n = 1,578</b><small>real trades</small></span>
-      <a class="read" href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">Read the study →</a>
-    </div>
-  </article>
-
-  <article class="spread">
-    <div class="no">II</div>
-    <div>
-      <h3>Rebasing capability statistics at 15,000-characteristic scale</h3>
-      <p>Realigning a production SPC platform to the AIAG &amp; VDA 2026 convention — where flipping
-      the classification gate from within-σ to overall-σ doubled the fail list, and why that was the
-      correct answer.</p>
-      <div class="tags"><span>AIAG &amp; VDA 2026</span><span>Cpk / Cwk / Ppk</span></div>
-    </div>
-    <div class="side"><span class="badge live">Live</span>
-      <a class="read" href="https://amohdnaw.github.io/case-studies/spc-capability-rebase.html" target="_blank">Read the study →</a></div>
-  </article>
-
-  <article class="spread">
-    <div class="no">III</div>
-    <div>
-      <h3>Finding the yield signal in inspection data</h3>
-      <p>Ranking yield-loss drivers by recoverable units instead of defect count — Pareto discipline
-      over intuition in optical-inspection data.</p>
-      <div class="tags"><span>yield analytics</span><span>Pareto</span></div>
-    </div>
-    <div class="side"><span class="badge live">Live</span>
-      <a class="read" href="https://amohdnaw.github.io/case-studies/icos-yield-signal.html" target="_blank">Read the study →</a></div>
-  </article>
-</div></section>
-
-
-<section class="chap" id="bench"><div class="wrap">
-  <div class="chap-head"><div><p class="k">02 — The Bench</p>
-  <h2 class="opener">Live instruments.</h2></div>
-  <span class="k">real fetches · sample fallback · no login</span></div>
-  <div class="bench-grid">
-    <div class="bench-full">  <section id="demo">
+  <h2 class="bench-h">Live data — SPC &amp; MSA</h2>
+  <p class="bench-sub">straight from the demo channels of both production-style apps</p>
+  <section id="demo">
     <p class="section-meta">Live Pull</p>
     <h2 class="section-title">Live Data — SPC &amp; MSA</h2>
     <p class="section-sub">Real-time fetches from both production apps — anonymized sample data, no login required.</p>
@@ -934,18 +640,18 @@
         <canvas id="msa-chart"></canvas>
       </div>
       <div class="demo-legend">
-        <span class="leg-item"><span class="leg-line" style="background:#aeb5c2"></span>EV (Repeatability)</span>
-        <span class="leg-item"><span class="leg-line" style="background:#d9804f"></span>AV (Reproducibility)</span>
-        <span class="leg-item"><span class="leg-line" style="background:#7fa477;height:1px;border-top:2px dashed #7fa477;background:none"></span>10% threshold</span>
-        <span class="leg-item"><span class="leg-line" style="background:none;border-top:2px dashed #d9804f;height:1px"></span>30% threshold</span>
+        <span class="leg-item"><span class="leg-line" style="background:#4c4a44"></span>EV (Repeatability)</span>
+        <span class="leg-item"><span class="leg-line" style="background:#c05f2e"></span>AV (Reproducibility)</span>
+        <span class="leg-item"><span class="leg-line" style="background:#3f7a4e;height:1px;border-top:2px dashed #3f7a4e;background:none"></span>10% threshold</span>
+        <span class="leg-item"><span class="leg-line" style="background:none;border-top:2px dashed #c05f2e;height:1px"></span>30% threshold</span>
       </div>
       <span class="demo-source">Data source: <a href="https://msa.amohdnaw.xyz/api/demo" target="_blank">msa.amohdnaw.xyz/api/demo</a> · live fetch on page load</span>
     </div>
   </section>
 
-  <!-- EDUCATION -->
-</div>
-    <div>  <section id="terminal">
+  <h2 class="bench-h">Terminal</h2>
+  <p class="bench-sub">type <b>help</b> · try <b>cpk</b>, <b>projects</b>, <b>play 2048</b>, <b>sudo hire ammar</b></p>
+  <section id="terminal">
     <p class="section-meta">Explore</p>
     <h2 class="section-title">Type a Command</h2>
     <p class="section-sub">Try: <code style="font-family:var(--font-mono);font-size:0.8rem;">help</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">projects</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">skills</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">cpk</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">play 2048</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">sudo hire ammar</code></p>
@@ -971,103 +677,51 @@
     <p class="iterm-hint">↑ / ↓ to navigate history · click terminal to focus</p>
   </section>
 
+  <h2 class="bench-h">Control-theory sims — Purdue, rebuilt for the browser</h2>
+  <p class="bench-sub">the same machines you can drive at <a href="/drive.html" style="color:var(--acc)">/drive</a></p>
+  <div class="sims">
+    <div class="sim-tile" data-project="gantry">
+      <h4>Gantry crane controller</h4>
+      <p>State-feedback anti-swing control (ME475). Click the track, tune the gains, watch it respond.</p>
+      <span class="go">Open simulation →</span>
+    </div>
+    <div class="sim-tile" data-project="myrio">
+      <h4>MyRIO “Sheepdog”</h4>
+      <p>PI velocity control with the real plant models from the ME375 report. Set Ki to zero and watch it fail.</p>
+      <span class="go">Open simulation →</span>
+    </div>
+  </div>
 </div>
-    <div>
-      <div class="sim-tile" data-project="gantry">
-        <h4>Sim — Gantry crane controller</h4>
-        <p>State-feedback anti-swing control (Purdue ME475). Click the track, tune the gains, watch it respond.</p>
-        <span class="go">Open simulation →</span>
-      </div>
-      <div class="sim-tile" data-project="myrio" style="margin-top:14px">
-        <h4>Sim — MyRIO “Sheepdog”</h4>
-        <p>PI velocity control with the real plant models from the ME375 report. Set Ki to zero and watch it fail.</p>
-        <span class="go">Open simulation →</span>
-      </div>
-    </div>
-  </div>
-</div></section>
 
-<section class="chap" id="work"><div class="wrap">
-  <div class="chap-head"><div><p class="k">03 — Work</p>
-  <h2 class="opener">Systems in production.</h2></div>
-  <span class="k">built and shipped — real infrastructure, real data</span></div>
-  <div class="tblwrap"><table class="worktbl">
-    <tr><th>System</th><th>What it does</th><th>Scale</th><th></th></tr>
-    <tr><td>SPC Dashboard</td><td>Control charts, Cpk, stability monitoring — custom-built to go beyond Minitab's constraints.<span class="sub">Python · FastAPI · PostgreSQL · Chart.js</span></td><td class="mono">15,000 chars</td><td class="mono"><a href="https://spc.amohdnaw.xyz" target="_blank">live ↗</a></td></tr>
-    <tr><td>MSA Platform</td><td>GR&amp;R, calibration workflows, study management with research hub and Kanban.<span class="sub">Python · FastAPI · PostgreSQL</span></td><td class="mono">production</td><td class="mono"><a href="https://msa.amohdnaw.xyz" target="_blank">live ↗</a></td></tr>
-    <tr><td>Trading Signals</td><td>Automated pipeline — news, technicals, on-chain metrics, AI briefings. The system audited, and partly discredited, in case study I.<span class="sub">Python · Binance API · Gemini · RAG</span></td><td class="mono">1,578 trades</td><td class="mono"><a href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">audit ↗</a></td></tr>
-    <tr><td>Career Ops</td><td>Job scanning → LLM compatibility scoring → tailored CV, fully automated.<span class="sub">Node.js · Playwright · MCP</span></td><td class="mono">pipeline</td><td class="mono"><a href="mailto:ammar.mnawawi@gmail.com">ask</a></td></tr>
-    <tr><td>Recipe Manager</td><td>AI cookbook for Malaysian home cooks — paste any URL, Gemini extracts the recipe. Bilingual EN/MY.<span class="sub">Bun · SQLite · Gemini · PWA</span></td><td class="mono">16 users · 129 recipes</td><td class="mono"><a href="https://recipe.amohdnaw.xyz" target="_blank">live ↗</a></td></tr>
-    <tr><td>Homelab</td><td>Proxmox on Ryzen, 11 LXCs — Plex, Immich, Nextcloud, tunnels. Where all of this runs.<span class="sub">Proxmox · LXC · Cloudflare</span></td><td class="mono">infra</td><td class="mono">writeup soon</td></tr>
-  </table></div>
-</div></section>
-
-<section class="chap" id="journey"><div class="wrap">
-  <div class="chap-head"><div><p class="k">04 — Journey</p>
-  <h2 class="opener">Six years on the line.</h2></div></div>
-  <div class="jrow"><div class="when">MAR 2024 — PRESENT</div><div>
-    <h3>Process Engineer (SPC)</h3><div class="co">TF-AMD Microelectronics (M) Sdn. Bhd.</div>
-    <p>Built and deployed custom SPC dashboards replacing manual JMP workflows — PostgreSQL backend,
-    REST API, live frontend used daily by 10+ engineers. Automated pipelines, Cpk monitoring, WECO
-    signal detection. MSA frameworks for cross-functional data integrity.</p></div></div>
-  <div class="jrow"><div class="when">NOV 2022 — MAR 2024</div><div>
-    <h3>Process Engineer (Visual Mechanical)</h3><div class="co">TF-AMD Microelectronics (M) Sdn. Bhd.</div>
-    <p>Defect trend analysis across BGA, PGA, LGA product families; Pareto analysis on consolidated
-    defect data to drive targeted quality improvements.</p></div></div>
-  <div class="jrow"><div class="when">JAN 2022 — NOV 2022</div><div>
-    <h3>Process Engineer</h3><div class="co">ASE Electronics (M) Sdn. Bhd.</div>
-    <p>Yield improvement for die attach and die sort via JMP data extraction, DOE experiments, and 8D
-    root cause analysis. Reduced die crack defects and cycle-time losses.</p></div></div>
-  <div class="jrow"><div class="when">AUG 2019 — JUN 2021</div><div>
-    <h3>Process Development Engineer</h3><div class="co">Sanmina SCI (M) Sdn. Bhd.</div>
-    <p>New product releases for communication products; led technicians and line leaders across
-    multiple assembly lines; line balancing and root-cause analysis to cut cycle time.</p></div></div>
-</div></section>
-
-<section class="chap" id="background"><div class="wrap">
-  <div class="chap-head"><div><p class="k">05 — Background</p>
-  <h2 class="opener">Foundation &amp; toolkit.</h2></div></div>
-  <div class="bg-grid">
-    <div>
-      <h3>BSc. Mechanical Engineering</h3><div class="co">PURDUE UNIVERSITY · 2014 — 2018</div>
-      <p>CGPA 3.26 · Dean's List · system controls, machine design, vehicle design. The gantry and
-      MyRIO sims on the bench are coursework from here, rebuilt to run in your browser.</p>
-      <h3>American Degree Foundation Program</h3><div class="co">INTEC EDUCATION COLLEGE · 2013 — 2014</div>
-      <p>CGPA 3.57 · TOEFL iBT 104/120.</p>
-    </div>
-    <div class="skills2">
-      <div><h4>Proficient</h4><ul>
-        <li>SPC / Cpk / control charts</li><li>MSA / GR&amp;R</li><li>JMP · Minitab</li>
-        <li>DOE · 8D · FMEA</li><li>JavaScript (vanilla)</li><li>Node.js / REST</li>
-        <li>PostgreSQL</li><li>Linux / Proxmox</li></ul></div>
-      <div><h4>Building</h4><ul>
-        <li>Python (pipelines)</li><li>SQL (window fns, CTEs)</li><li>Claude Code + MCP</li>
-        <li>Data pipelines / ETL</li><li>LLM APIs</li><li>BigQuery</li></ul></div>
-    </div>
-  </div>
-  <div class="flowstrip">
-    <div><i>01</i><b>Problem first</b><p>The tool has to replace something real — Cpk drift undetected, a half-day gauge study.</p></div>
-    <div><i>02</i><b>Agentic session</b><p>Claude Code + MCP: schema to working API in one sitting.</p></div>
-    <div><i>03</i><b>Ship same-day</b><p>Deployed on own infra, used on the line the next morning.</p></div>
-    <div><i>04</i><b>Verify in production</b><p>If the engineers don't open it daily, it gets fixed or killed.</p></div>
-  </div>
-</div></section>
-
-<footer id="contact"><div class="wrap">
-  <div class="talk">Let's talk.</div>
-  <div class="meta"><a href="mailto:ammar.mnawawi@gmail.com">ammar.mnawawi@gmail.com</a><br>
-  <a href="https://linkedin.com/in/aammarmnawawi/" target="_blank">LinkedIn</a> ·
-  <a href="https://github.com/amohdnaw" target="_blank">GitHub</a> ·
-  <a href="https://amohdnaw.github.io/case-studies/" target="_blank">case studies</a></div>
-</div></footer>
-
-<div id="scroll-progress" style="display:none"></div>
-<button id="back-to-top" aria-label="Back to top">↑ top</button>
-<button id="float-term-btn" aria-label="Open terminal">›_</button>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="x">↑</button>
+<button id="float-term-btn" aria-label="x">›_</button>
 <button id="hamburger" hidden></button>
+<div id="navLinks" hidden></div>
+<div id="hero" hidden></div>
+
+<div class="cpk2048-overlay" id="cpk2048-modal">
+  <div class="cpk2048-box">
+    <div class="cpk2048-header">
+      <span class="cpk2048-title">Process Improvement 2048</span>
+      <button class="cpk2048-close" id="cpk2048-close">✕</button>
+    </div>
+    <div class="cpk2048-meta">merge identical processes · reach Cpk 2.00 to win</div>
+    <div class="cpk2048-score-row">
+      <div>
+        <div class="cpk2048-score-label">Score</div>
+        <div class="cpk2048-score-val" id="cpk-score">0</div>
+      </div>
+      <button class="cpk2048-restart" id="cpk2048-restart">restart</button>
+    </div>
+    <div class="cpk2048-grid" id="cpk-grid"></div>
+    <div class="cpk2048-hint">↑ ↓ ← → to move · swipe on mobile</div>
+    <div class="cpk2048-msg" id="cpk2048-msg"></div>
+  </div>
+</div>
 
 
-<script>
+<script>window.__err=null;window.onerror=(m,src,l,c)=>{window.__err=m+" @"+l;};</script><script>
   /* ── SCROLL PROGRESS + BACK TO TOP ─────────────────────── */
   (function () {
     const bar    = document.getElementById('scroll-progress');
@@ -1314,17 +968,17 @@
         data: {
           labels: d.subgroups.map(sg => 'SG' + sg.idx),
           datasets: [
-            { label: 'USL', data: flat(d.usl), borderColor: '#828b9d', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
-            { label: 'LSL', data: flat(d.lsl), borderColor: '#828b9d', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
-            { label: 'UCL', data: flat(d.ucl), borderColor: '#d9804f', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
-            { label: 'LCL', data: flat(d.lcl), borderColor: '#d9804f', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
-            { label: 'CL',  data: flat(d.cl),  borderColor: '#7fa477', borderWidth: 1.5, pointRadius: 0, order: 2 },
+            { label: 'USL', data: flat(d.usl), borderColor: '#807d74', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
+            { label: 'LSL', data: flat(d.lsl), borderColor: '#807d74', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
+            { label: 'UCL', data: flat(d.ucl), borderColor: '#c05f2e', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
+            { label: 'LCL', data: flat(d.lcl), borderColor: '#c05f2e', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
+            { label: 'CL',  data: flat(d.cl),  borderColor: '#3f7a4e', borderWidth: 1.5, pointRadius: 0, order: 2 },
             {
               label: 'X̄',
               data: d.subgroups.map(sg => sg.xbar),
-              borderColor: '#aeb5c2', borderWidth: 2, tension: 0.25, order: 1,
-              pointBackgroundColor: violations.map(v => v ? '#d9804f' : '#aeb5c2'),
-              pointBorderColor:     violations.map(v => v ? '#d9804f' : '#aeb5c2'),
+              borderColor: '#4c4a44', borderWidth: 2, tension: 0.25, order: 1,
+              pointBackgroundColor: violations.map(v => v ? '#c05f2e' : '#4c4a44'),
+              pointBorderColor:     violations.map(v => v ? '#c05f2e' : '#4c4a44'),
               pointRadius:          violations.map(v => v ? 7 : 4),
               pointHoverRadius:     violations.map(v => v ? 9 : 6),
             }
@@ -1380,7 +1034,7 @@
       // Bar chart: EV, AV, GR&R components as horizontal bars with threshold lines
       const labels = ['EV (Repeatability)', 'AV (Reproducibility)', 'GR&R Total'];
       const values = [d.ev_pct, d.av_pct, d.grr_pct];
-      const colors = ['#aeb5c2', '#d9804f', '#5f6675'];
+      const colors = ['#4c4a44', '#c05f2e', '#9a958a'];
 
       new Chart(document.getElementById('msa-chart').getContext('2d'), {
         type: 'bar',
@@ -1396,8 +1050,8 @@
               borderRadius: 4,
               barThickness: 32,
             },
-            { label: 'Acceptable (10%)', data: [10, 10, 10], type: 'line', borderColor: '#7fa477', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
-            { label: 'Marginal (30%)',   data: [30, 30, 30], type: 'line', borderColor: '#d9804f', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
+            { label: 'Acceptable (10%)', data: [10, 10, 10], type: 'line', borderColor: '#3f7a4e', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
+            { label: 'Marginal (30%)',   data: [30, 30, 30], type: 'line', borderColor: '#c05f2e', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
           ]
         },
         options: {
@@ -1455,7 +1109,7 @@
 
   /* ── CONSOLE EASTER EGG ──────────────────────────────────── */
   (function () {
-    const s = 'color:#d9804f;font-size:20px;font-weight:bold;font-family:monospace;padding:2px 6px;';
+    const s = 'color:#c05f2e;font-size:20px;font-weight:bold;font-family:monospace;padding:2px 6px;';
     const m = 'color:#999;font-size:11px;font-family:monospace;';
     const g = 'color:#28ca42;font-family:monospace;font-size:11px;';
     const d = 'color:#555;font-family:monospace;font-size:11px;';
@@ -1916,8 +1570,8 @@ Try:
     /* ── controller block diagram helpers ─────────────────────── */
     function _diagBlock(ctx, x, y, w, h, label, sub) {
       ctx.save();
-      ctx.fillStyle = '#d9804f22'; ctx.fillRect(x, y, w, h);
-      ctx.strokeStyle = '#d9804f'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = '#c05f2e22'; ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = '#c05f2e'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       if (sub) {
         ctx.fillStyle = '#e8eaed'; ctx.font = 'bold 10px monospace';
@@ -1968,7 +1622,7 @@ Try:
 
       /* Summing junction */
       ctx.save();
-      ctx.strokeStyle = '#d9804f'; ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#c05f2e'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(sumCX, cy, sumR, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = '#8ab4f8'; ctx.font = 'bold 13px monospace';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -3250,7 +2904,7 @@ Try:
       if (cpk >= 1.67) return '#28ca42';
       if (cpk >= 1.33) return '#4CAF50';
       if (cpk >= 1.00) return '#f59e0b';
-      return '#d9804f';
+      return '#c05f2e';
     }
     function cpkVerdict(cpk) {
       if (cpk >= 2.00) return 'World Class';
@@ -3286,7 +2940,7 @@ Try:
     if (msaBack) {
       fetch('https://msa.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
         const ok = d.grr_pct <= 10;
-        const col = ok ? '#28ca42' : (d.grr_pct <= 30 ? '#f59e0b' : '#d9804f');
+        const col = ok ? '#28ca42' : (d.grr_pct <= 30 ? '#f59e0b' : '#c05f2e');
         msaBack.innerHTML = `
           <div class="live-stat-row">
             <div class="live-stat">
@@ -3294,7 +2948,7 @@ Try:
               <span class="live-stat-label">GR&amp;R</span>
             </div>
             <div class="live-stat">
-              <span class="live-stat-val" style="color:#d9804f">${d.ndc}</span>
+              <span class="live-stat-val" style="color:#c05f2e">${d.ndc}</span>
               <span class="live-stat-label">NDC</span>
             </div>
           </div>
@@ -3315,8 +2969,8 @@ Try:
   /* ── CPK 2048 ────────────────────────────────────────────── */
   (function () {
     const CPK = {
-      2:  { label: 'Cpk 0.33', sub: 'Out of Spec', color: '#d9804f' },
-      4:  { label: 'Cpk 0.67', sub: 'Marginal',    color: '#d9804f' },
+      2:  { label: 'Cpk 0.33', sub: 'Out of Spec', color: '#c05f2e' },
+      4:  { label: 'Cpk 0.67', sub: 'Marginal',    color: '#c05f2e' },
       8:  { label: 'Cpk 1.00', sub: 'Minimum',     color: '#FF9800' },
       16: { label: 'Cpk 1.33', sub: 'Capable',     color: '#f59e0b' },
       32: { label: 'Cpk 1.67', sub: 'Excellent',   color: '#4CAF50' },
@@ -3355,7 +3009,7 @@ Try:
         const cell = document.createElement('div');
         cell.className = 'cpk-cell';
         if (val) {
-          const info = CPK[val] || { label: String(val), sub: '···', color: '#aeb5c2' };
+          const info = CPK[val] || { label: String(val), sub: '···', color: '#4c4a44' };
           cell.style.background = info.color + '18';
           cell.style.borderColor = info.color + '55';
           const vEl = document.createElement('span');
@@ -3445,8 +3099,7 @@ Try:
     init();
   })();
 
-</script>
-<script>
+;
 fetch('https://spc.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
   document.getElementById('hero-pulse-cpk').textContent = d.cpk.toFixed(2);
   document.getElementById('hero-pulse').hidden = false;
