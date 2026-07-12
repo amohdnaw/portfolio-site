@@ -129,7 +129,8 @@
 })();
 </script>
 
-<div id="mini" title="arrow keys — or tap me" aria-hidden="true">
+<div id="mini-hint">← → drive me</div>
+<div id="mini" title="arrow keys — or click me" aria-hidden="true">
   <svg width="54" height="30" viewBox="0 0 54 30">
     <rect x="6" y="10" width="34" height="7" rx="1.5" fill="#2f63c9"/>
     <rect x="12" y="4" width="12" height="7" fill="#101114"/>
@@ -141,6 +142,10 @@
 </div>
 <style>
 #mini{position:fixed;bottom:6px;left:30px;z-index:40;cursor:pointer;transition:filter .2s}
+#mini-hint{position:fixed;bottom:40px;left:34px;z-index:40;font:600 10.5px/1 ui-monospace,Menlo,monospace;
+  letter-spacing:.06em;color:#807d74;opacity:0;transition:opacity .6s;pointer-events:none}
+#mini-hint.on{opacity:1}
+@media(max-width:520px){#mini-hint{display:none}}
 #mini:hover{filter:drop-shadow(0 2px 6px rgba(192,95,46,.5))}
 @media(max-width:520px){#mini{display:none}}
 </style>
@@ -151,14 +156,18 @@
   const w1=document.getElementById('mw1'), w2=document.getElementById('mw2');
   let rot=0;
   addEventListener('keydown',e=>{
-    if(document.body.scrollHeight > innerHeight + 80) return;   // don't steal scroll keys
+    // Left/Right never scroll a vertical page — safe to claim them for the robot
     if(e.key==='ArrowRight'){v=5;dir=1;e.preventDefault();}
     if(e.key==='ArrowLeft'){v=-5;dir=-1;e.preventDefault();}
   });
   addEventListener('keyup',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft')v=0;});
-  m.addEventListener('click',()=>{v=6*dir; setTimeout(()=>v=0,650);});
+  m.addEventListener('click',()=>{v=6*dir; setTimeout(()=>v=0,650); hintOff();});
+  const hint=document.getElementById('mini-hint');
+  let hintDead=false;
+  setTimeout(()=>{ if(!hintDead) hint.classList.add('on'); }, 2500);
+  function hintOff(){ hintDead=true; hint.classList.remove('on'); }
   (function step(){
-    if(v){ x+=v; rot+=v*9;
+    if(v){ x+=v; rot+=v*9; hintOff();
       if(x>innerWidth-30){x=innerWidth-30;dir=-1;v=-Math.abs(v);}
       if(x<-24){x=-24;dir=1;v=Math.abs(v);}
       m.style.left=x+'px';
