@@ -5,7 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ammar Nawawi — Process Engineer (SPC)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<meta name="description" content="Process engineer building statistical evidence: SPC at production scale, honest inference, live systems.">
+<meta name="description" content="Evidence, not claims — every number links to a live system or a runnable notebook. SPC at production scale, honest inference, live systems.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ammar Nawawi — evidence, not claims">
+<meta property="og:description" content="Process Engineer (SPC), Penang. Every number on this page links to a live system or a runnable notebook. 1,578 trades audited — edge disproven, published anyway.">
+<meta property="og:url" content="https://portfolio.amohdnaw.xyz/">
+<meta property="og:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
 <style>
   :root{
     --bg:#171614; --raised:#1e1c1a; --elev:#252220; --line:#33302c; --line-soft:#262421;
@@ -44,6 +52,12 @@
   .acts a.p:hover{background:#c26547}
   .acts a.g{border:1px solid var(--line);color:var(--dim)}
   .acts a.g:hover{color:var(--disp);border-color:var(--faint)}
+  .hero-feature{margin-top:26px;font:600 12.5px/1.7 var(--mono);display:flex;flex-direction:column;gap:6px}
+  .hero-feature a{color:var(--ink);border-bottom:1px solid var(--acc);padding-bottom:2px;width:max-content;max-width:100%}
+  .hero-feature a span{color:var(--acc)}
+  .hero-feature .pulse{color:var(--dim);font-size:11px;letter-spacing:.04em}
+  .hero-feature .pulse b{color:var(--ok)}
+  .hero-feature .pulse::first-letter{color:var(--ok)}
   .heronums{display:flex;gap:0;border:1px solid var(--line);background:var(--raised);margin-top:40px;max-width:640px}
   .heronums div{flex:1;padding:14px 18px;border-right:1px solid var(--line-soft)}
   .heronums div:last-child{border-right:0}
@@ -772,9 +786,14 @@
     <a class="g" href="https://github.com/amohdnaw" target="_blank">GitHub</a>
     <a class="g" href="mailto:ammar.mnawawi@gmail.com">Email</a>
   </div>
+  <div class="hero-feature">
+    <a href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">
+      Latest — “I audited my own trading system — and killed my best result” <span>→ read</span></a>
+    <span class="pulse" id="hero-pulse" hidden>● live now · Cpk <b id="hero-pulse-cpk">—</b> on the demo channel · 15,000 characteristics under watch</span>
+  </div>
   <div class="heronums">
     <div><b class="stat-value">15,000</b><small>characteristics monitored</small></div>
-    <div><b class="stat-value">1,578</b><small>trades audited to a null</small></div>
+    <div><b class="stat-value">1,578</b><small>trades audited — edge disproven</small></div>
     <div><b class="stat-value">4</b><small>systems in production</small></div>
     <div><b class="stat-value">10+</b><small>engineers using them daily</small></div>
   </div>
@@ -3414,6 +3433,12 @@ Try:
     init();
   })();
 
+</script>
+<script>
+fetch('https://spc.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
+  document.getElementById('hero-pulse-cpk').textContent = d.cpk.toFixed(2);
+  document.getElementById('hero-pulse').hidden = false;
+}).catch(() => {});
 </script>
 </body>
 </html>
