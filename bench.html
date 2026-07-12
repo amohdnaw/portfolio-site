@@ -1,0 +1,3456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ammar Nawawi — Process Engineer (SPC)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<meta name="description" content="Evidence, not claims — every number links to a live system or a runnable notebook. SPC at production scale, honest inference, live systems.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ammar Nawawi — evidence, not claims">
+<meta property="og:description" content="Process Engineer (SPC), Penang. Every number on this page links to a live system or a runnable notebook. 1,578 trades audited — edge disproven, published anyway.">
+<meta property="og:url" content="https://portfolio.amohdnaw.xyz/">
+<meta property="og:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://portfolio.amohdnaw.xyz/og-portfolio.png">
+<style>
+  :root{
+    --bg:#12151c; --raised:#181d27; --elev:#202634; --line:#2c3446; --line-soft:#222939;
+    --disp:#dfe3ec; --ink:#b7bfce; --dim:#828b9d; --faint:#525a6b;
+    --acc:#d9804f; --acc-soft:rgba(217,128,79,.14); --ok:#7fa477;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --mono:ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font:15.5px/1.65 var(--serif)}
+  a{color:var(--acc);text-decoration:none}
+  .wrap{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,36px)}
+  .k{font:600 10px/1.7 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+  .k b{color:var(--ink);font-weight:600}
+  ::selection{background:var(--acc);color:var(--bg)}
+
+  nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);z-index:50}
+  nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:15px;padding-bottom:15px;gap:12px;flex-wrap:wrap}
+  nav .id{font:600 12px/1 var(--mono);letter-spacing:.06em;color:var(--disp)}
+  nav .id span{color:var(--acc)}
+  nav .links{display:flex;gap:20px;font:600 9.5px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;flex-wrap:wrap}
+  nav .links a{color:var(--dim)}
+  nav .links a:hover{color:var(--disp)}
+
+  header.hero{padding:84px 0 60px;border-bottom:1px solid var(--line)}
+  .otw{display:inline-flex;align-items:center;gap:8px;font:600 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+    color:var(--ok);border:1px solid var(--line);padding:7px 13px;margin:20px 0 14px}
+  .otw::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
+  h1{font-size:clamp(44px,7vw,62px);line-height:1;letter-spacing:-.02em;color:var(--disp);font-weight:600}
+  .lede{margin-top:16px;font-size:17.5px;line-height:1.65;font-style:italic;color:var(--dim);max-width:33em}
+  .lede b{color:var(--ink);font-style:normal;font-weight:600}
+  .acts{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+  .acts a{font:700 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:13px 19px}
+  .acts a.p{background:var(--acc);color:#1a1410}
+  .acts a.p:hover{background:#c26547}
+  .acts a.g{border:1px solid var(--line);color:var(--dim)}
+  .acts a.g:hover{color:var(--disp);border-color:var(--faint)}
+  .hero-feature{margin-top:26px;font:600 12.5px/1.7 var(--mono);display:flex;flex-direction:column;gap:6px}
+  .hero-feature a{color:var(--ink);border-bottom:1px solid var(--acc);padding-bottom:2px;width:max-content;max-width:100%}
+  .hero-feature a span{color:var(--acc)}
+  .hero-feature .pulse{color:var(--dim);font-size:11px;letter-spacing:.04em}
+  .hero-feature .pulse b{color:var(--ok)}
+  .hero-feature .pulse::first-letter{color:var(--ok)}
+  .heronums{display:flex;gap:0;border:1px solid var(--line);background:var(--raised);margin-top:40px;max-width:640px}
+  .heronums div{flex:1;padding:14px 18px;border-right:1px solid var(--line-soft)}
+  .heronums div:last-child{border-right:0}
+  .heronums b{font:700 21px/1.35 var(--mono);color:var(--disp);display:block}
+  .heronums small{font:600 8.5px/1.6 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+  section.chap{padding:64px 0;border-bottom:1px solid var(--line)}
+  .opener{font-size:clamp(26px,4vw,36px);letter-spacing:-.012em;color:var(--disp);font-weight:600;margin:8px 0 34px}
+  .chap-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+
+  .spread{display:grid;grid-template-columns:60px 1fr 180px;gap:22px;padding:24px 0;border-top:1px solid var(--line-soft)}
+  .spread:first-of-type{border-top:2px solid var(--faint)}
+  .spread .no{font:400 40px/1 var(--serif);color:var(--acc)}
+  .spread.soon .no{color:var(--faint)}
+  .spread h3{font-size:19.5px;line-height:1.3;color:var(--disp);font-weight:600;margin-bottom:7px}
+  .spread p{font-size:.92rem;color:var(--dim);max-width:36em}
+  .spread p code{font-family:var(--mono);font-size:.78rem;color:var(--ink)}
+  .tags{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+  .tags span{font:600 9.5px/1 var(--mono);letter-spacing:.05em;border:1px solid var(--line);padding:4px 8px;color:var(--dim)}
+  .tags .hot{border-color:rgba(217,128,79,.55);color:var(--acc)}
+  .spread .side{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+  .badge{font:700 9px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;padding:5px 10px}
+  .badge.live{background:var(--acc-soft);color:var(--acc);border:1px solid rgba(217,128,79,.4)}
+  .badge.soon{border:1px solid var(--line);color:var(--faint)}
+  .read{font:600 10.5px/1 var(--mono);letter-spacing:.04em;color:var(--ink);border-bottom:1px solid var(--acc);padding-bottom:2px}
+  .read:hover{color:var(--disp)}
+  .sidestat b{font:700 19px/1.3 var(--mono);color:var(--disp);display:block}
+  .sidestat small{font:600 8.5px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+
+  .slice-note{padding:26px 0 60px;text-align:center;font:600 10px/1.8 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+
+  @media(max-width:700px){
+    .spread{grid-template-columns:40px 1fr}
+    .spread .side{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start}
+    .heronums{flex-wrap:wrap}
+    .heronums div{flex:1 1 45%}
+  }
+
+  /* legacy component aliases → v2 tokens */
+  :root{
+    --bg-raised:var(--raised); --bg-elevated:var(--elev); --border:var(--line);
+    --text-display:var(--disp); --text-primary:var(--ink); --text-secondary:var(--dim);
+    --text-disabled:var(--faint); --red:var(--acc); --green:var(--ok); --amber:#b08d4a;
+    --font-body:var(--serif); --font-mono:var(--mono); --font-doto:var(--serif);
+    --dot-color:transparent;
+    --space-4:4px; --space-8:8px; --space-16:16px; --space-32:32px; --space-48:48px; --space-64:64px; --space-96:96px;
+  }
+  /* calm the ported sections inside chapters */
+  #terminal,#demo{padding:0;border:0;background:none}
+  #terminal .section-label,#terminal .section-title,#terminal .section-sub,
+  #demo .section-label,#demo .section-title,#demo .section-sub{display:none}
+  .bench-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  .bench-grid > *{min-width:0}
+  .bench-full{grid-column:1/-1}
+  .sim-tile{border:1px solid var(--line);background:var(--raised);padding:18px;cursor:pointer}
+  .sim-tile:hover{border-color:var(--faint)}
+  .sim-tile h4{font:600 10px/1.6 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+  .sim-tile p{font-size:.85rem;color:var(--dim)}
+  .sim-tile .go{font:600 10px/2.4 var(--mono);color:var(--ink)}
+  .worktbl{width:100%;border-collapse:collapse;font-size:.9rem}
+  .worktbl th{font:600 9.5px/1.5 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--dim);text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  .worktbl td{padding:11px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .worktbl td:first-child{color:var(--disp);font-weight:600;white-space:nowrap}
+  .worktbl td.mono{font-family:var(--mono);font-size:.74rem;color:var(--dim);white-space:nowrap}
+  .worktbl .sub{display:block;font-size:.78rem;color:var(--dim);font-weight:400;white-space:normal}
+  .tblwrap{overflow-x:auto}
+  .jrow{display:grid;grid-template-columns:190px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--line-soft)}
+  .jrow:first-of-type{border-top:2px solid var(--faint)}
+  .jrow .when{font:600 10px/1.8 var(--mono);letter-spacing:.08em;color:var(--dim)}
+  .jrow h3{font-size:16.5px;color:var(--disp);margin-bottom:2px}
+  .jrow .co{font:600 11px/1.8 var(--mono);color:var(--acc)}
+  .jrow p{font-size:.88rem;color:var(--dim);margin-top:6px}
+  .bg-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:36px}
+  .bg-grid h3{font-size:16px;color:var(--disp);margin-bottom:2px}
+  .bg-grid .co{font:600 10.5px/1.8 var(--mono);color:var(--dim)}
+  .bg-grid p{font-size:.85rem;color:var(--dim);margin:6px 0 18px}
+  .skills2{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+  .skills2 h4{font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+  .skills2 li{list-style:none;font-size:.88rem;padding:6px 0;border-bottom:1px solid var(--line-soft);color:var(--ink)}
+  .flowstrip{display:flex;gap:0;border:1px solid var(--line);background:var(--raised);margin-top:30px;flex-wrap:wrap}
+  .flowstrip div{flex:1 1 200px;padding:14px 16px;border-right:1px solid var(--line-soft)}
+  .flowstrip div:last-child{border-right:0}
+  .flowstrip i{font:600 10px/1 var(--mono);color:var(--acc);font-style:normal}
+  .flowstrip b{display:block;font-size:.92rem;color:var(--disp);margin:6px 0 2px}
+  .flowstrip p{font-size:.78rem;color:var(--dim)}
+  footer{padding:56px 0 70px}
+  footer .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  footer .talk{font-size:30px;font-weight:600;color:var(--disp)}
+  footer .meta{font:12px/2 var(--mono);color:var(--dim);text-align:right}
+  footer .meta a{color:var(--ink);border-bottom:1px solid var(--acc)}
+  @media(max-width:760px){.bench-grid{grid-template-columns:1fr}.jrow{grid-template-columns:1fr;gap:4px}.bg-grid{grid-template-columns:1fr}}
+  @media(max-width:700px){
+    nav .wrap{padding-top:10px;padding-bottom:10px;row-gap:6px}
+    nav .links{gap:11px;font-size:8.5px;letter-spacing:.1em}
+    nav .id{font-size:10.5px}
+    .worktbl tr:first-child{display:none}
+    .worktbl,.worktbl tbody,.worktbl tr,.worktbl td{display:block;width:100%}
+    .worktbl tr{border:1px solid var(--line-soft);border-top:0;padding:16px 16px 14px}
+    .worktbl tr:nth-child(2){border-top:1px solid var(--line-soft)}
+    .worktbl td{border:0;padding:0;white-space:normal}
+    .worktbl td:first-child{font-size:16.5px;margin-bottom:6px}
+    .worktbl td.mono{display:inline-block;width:auto;margin-top:10px;padding-right:16px;white-space:nowrap}
+  }
+    transition: opacity 400ms ease-out;
+  }
+  #rotator-text.fading { opacity: 0; }
+
+  #float-term-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-raised);
+    color: var(--text-disabled);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms, color 150ms, border-color 150ms, background 300ms;
+  }
+  #float-term-btn.visible { opacity: 1; pointer-events: auto; }
+  #float-term-btn:hover { color: var(--text-primary); border-color: var(--text-disabled); }
+
+  /* ── INTERACTIVE TERMINAL ────────────────────────────────── */
+  .iterm-window {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #0f0f0f;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .iterm-titlebar {
+    height: 36px;
+    background: #1e1e1e;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    position: relative;
+    border-bottom: 1px solid #2a2a2a;
+    flex-shrink: 0;
+  }
+
+  .iterm-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    color: #555;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .iterm-body {
+    padding: 16px 20px;
+    min-height: 220px;
+    max-height: 340px;
+    overflow-y: auto;
+    color: #d4d4d4;
+    line-height: 1.7;
+    scroll-behavior: smooth;
+  }
+
+  .iterm-body::-webkit-scrollbar { width: 4px; }
+  .iterm-body::-webkit-scrollbar-track { background: transparent; }
+  .iterm-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+  .iterm-line { display: flex; gap: 8px; align-items: flex-start; }
+  .iterm-ps { color: #28ca42; flex-shrink: 0; }
+  .iterm-cmd-text { color: #d4d4d4; }
+
+  .iterm-out { padding-left: 0; white-space: pre-wrap; color: #888; margin-bottom: 4px; }
+  .iterm-out.green  { color: #28ca42; }
+  .iterm-out.yellow { color: #ffbd2e; }
+  .iterm-out.red    { color: #d9804f; }
+  .iterm-out.dim    { color: #555; }
+  .iterm-out.white  { color: #e8e8e8; }
+
+  .iterm-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 20px 16px;
+    border-top: 1px solid #1a1a1a;
+    background: #0f0f0f;
+  }
+
+  .iterm-ps2 { color: #28ca42; font-family: var(--font-mono); font-size: 0.82rem; flex-shrink: 0; }
+
+  #iterm-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #e8e8e8;
+    caret-color: #28ca42;
+  }
+
+  .iterm-hint {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.06em;
+    margin-top: var(--space-8);
+  }
+
+  /* ── SPC DEMO ────────────────────────────────────────────── */
+  .demo-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-raised);
+  }
+
+  .demo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-16);
+    padding: var(--space-16) var(--space-32);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .demo-char {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.04em;
+  }
+
+  .demo-unit { font-weight: 400; color: var(--text-disabled); margin-left: 4px; }
+
+  .demo-stats { display: flex; gap: var(--space-32); align-items: center; flex-wrap: wrap; }
+
+  .demo-stat { display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
+
+  .demo-stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .demo-stat-value {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-display);
+  }
+
+  .demo-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+
+  .demo-badge.controlled { color: var(--green); border-color: rgba(76,175,80,0.3); }
+  .demo-badge.violation  { color: var(--red);   border-color: rgba(215,25,33,0.3); }
+
+  .demo-chart-wrap {
+    padding: var(--space-16) var(--space-32);
+    height: 260px;
+    position: relative;
+  }
+
+  .demo-legend {
+    display: flex;
+    gap: var(--space-32);
+    padding: 0 var(--space-32) var(--space-16);
+    flex-wrap: wrap;
+  }
+
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .leg-line { display: inline-block; width: 20px; height: 2px; }
+  .leg-line.xbar { background: #aeb5c2; }
+  .leg-line.cl   { background: #7fa477; }
+  .leg-line.ucl  { background: #d9804f; }
+  .leg-line.usl  { background: #828b9d; }
+  .leg-ooc { width: 8px; height: 8px; border-radius: 50%; background: #d9804f; }
+
+  .demo-source {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    padding: 0 var(--space-32) var(--space-16);
+    display: block;
+  }
+
+  .demo-source a { color: var(--text-disabled); border-bottom: 1px solid var(--border); }
+  .demo-source a:hover { color: var(--text-secondary); }
+
+  @media (max-width: 640px) {
+    .demo-header { flex-direction: column; align-items: flex-start; }
+    .demo-stats  { gap: var(--space-16); }
+    .demo-chart-wrap { padding: var(--space-16); height: 200px; }
+    .demo-legend, .demo-source { padding-left: var(--space-16); padding-right: var(--space-16); }
+  }
+
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--text-display);
+    z-index: 200;
+    transition: width 60ms linear;
+  }
+
+  /* ── BACK TO TOP ──────────────────────────────────────────── */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 1000;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-disabled);
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms, color 150ms, border-color 150ms, background 300ms;
+  }
+
+  /* ── PROJECT MODAL ───────────────────────────────────────── */
+  .p-modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .p-modal-overlay.open {
+    opacity: 1; pointer-events: auto;
+  }
+  .p-modal-box {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: min(92vw, 920px);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 40px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.25s ease;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  }
+  .p-modal-overlay.open .p-modal-box {
+    transform: translateY(0);
+  }
+  .p-modal-close {
+    position: absolute; top: 16px; right: 20px;
+    background: none; border: none;
+    font-size: 1.2rem; color: var(--text-secondary); cursor: pointer;
+    line-height: 1; padding: 4px 8px;
+    transition: color 0.15s;
+  }
+  .p-modal-close:hover { color: var(--text-primary); }
+  .p-modal-tag {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: #d9804f; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .p-modal-title {
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--text-display); margin: 8px 0 4px;
+  }
+  .p-modal-sub {
+    font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 28px;
+    font-family: var(--font-mono);
+  }
+  /* Simulation layout */
+  .sim-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 620px) { .sim-wrap { grid-template-columns: 1fr; } }
+  .sim-canvas-area {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .sim-canvas-label {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .sim-canvas-area canvas {
+    width: 100%; border-radius: 8px;
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    cursor: crosshair;
+  }
+  .sim-hint {
+    font-size: 0.72rem; color: var(--text-disabled);
+    font-family: var(--font-mono); text-align: center;
+  }
+  .sim-plots { display: flex; flex-direction: column; gap: 12px; }
+  .sim-plot-box { position: relative; }
+  .sim-plot-box canvas {
+    width: 100%; border-radius: 6px;
+    background: #0a0a0a; border: 1px solid var(--border);
+  }
+  .sim-params {
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    grid-column: 1 / -1;
+  }
+  .sim-params-title {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: #d9804f; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 12px;
+  }
+  .sim-param-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px 16px;
+  }
+  .sim-param-row {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--text-secondary);
+  }
+  .sim-param-row span { color: var(--text-primary); }
+  /* Slider control */
+  .sim-controls {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    margin-top: 12px;
+  }
+  .sim-slider-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 100px; }
+  .sim-slider-group label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-secondary); }
+  .sim-slider-group input[type=range] { width: 100%; accent-color: #d9804f; }
+  /* placeholder modal */
+  .sim-placeholder {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.85rem;
+  }
+  .sim-placeholder .sim-ph-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+  /* "Open Sim" link on cards */
+  .p-card-sim-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: #d9804f; cursor: pointer;
+    background: none; border: 1px solid #d9804f;
+    border-radius: 4px; padding: 4px 10px;
+    transition: background 0.15s, color 0.15s; margin-top: 4px;
+  }
+  .p-card-sim-btn:hover { background: #d9804f; color: #000; }
+
+  /* Theory panel */
+  .sim-theory {
+    grid-column: 1 / -1;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .sim-theory-toggle {
+    width: 100%; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em;
+    border-bottom: 1px solid transparent; transition: background 0.15s, border-color 0.15s;
+  }
+  .sim-theory-toggle:hover { background: rgba(255,255,255,0.04); }
+  .sim-theory-toggle.open { border-bottom-color: var(--border); }
+  .sim-theory-body {
+    display: none; padding: 20px;
+    background: rgba(0,0,0,0.15);
+  }
+  .sim-theory-body.open { display: block; }
+  .myrio-tabs { display:flex; gap:6px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px; flex-wrap:wrap; }
+  .myrio-tab { background:none; border:none; border-bottom:2px solid transparent; color:var(--text-secondary); padding:5px 14px; font-family:var(--font-mono); font-size:0.73rem; cursor:pointer; margin-bottom:-11px; transition:color 0.15s, border-color 0.15s; }
+  .myrio-tab.active { color:var(--text-primary); border-bottom-color:#d9804f; }
+  .myrio-tab:hover:not(.active) { color:var(--text-primary); }
+  .sim-theory-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  @media (max-width: 620px) { .sim-theory-grid { grid-template-columns: 1fr; } }
+  .sim-theory-col h4 {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: #d9804f; text-transform: uppercase; letter-spacing: 0.06em;
+    margin: 0 0 10px;
+  }
+  .sim-eq {
+    font-family: var(--font-mono); font-size: 0.74rem;
+    color: var(--text-primary); line-height: 1.8;
+    background: rgba(0,0,0,0.2); border-radius: 4px;
+    padding: 10px 12px; margin-bottom: 10px;
+    white-space: pre;
+  }
+  .sim-theory-note {
+    font-size: 0.72rem; color: var(--text-secondary);
+    line-height: 1.6; margin-top: 8px;
+  }
+  .sim-theory-note strong { color: var(--text-primary); }
+
+  /* ── FLOW PIPELINE ───────────────────────────────────────── */
+  .flow-pipeline {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+  .flow-step {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: var(--space-16);
+    background: var(--bg-raised);
+  }
+  .flow-num {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--red);
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+  .flow-title {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .flow-desc {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0 0 8px 0;
+  }
+  .flow-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.08em;
+  }
+  .flow-arrow {
+    align-self: center;
+    font-family: var(--font-mono);
+    color: var(--text-disabled);
+    font-size: 1.1rem;
+    padding-top: 8px;
+  }
+
+  /* ── CPK 2048 MODAL ──────────────────────────────────────── */
+  .cpk2048-overlay {
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.22s;
+  }
+  .cpk2048-overlay.open { opacity: 1; pointer-events: auto; }
+  .cpk2048-box {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    width: min(92vw, 400px);
+    box-shadow: 0 28px 72px rgba(0,0,0,0.65);
+  }
+  .cpk2048-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .cpk2048-title {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+  }
+  .cpk2048-close {
+    background: none; border: none;
+    color: var(--text-disabled); font-size: 0.95rem;
+    cursor: pointer; padding: 4px 6px;
+    font-family: var(--font-mono);
+    transition: color 120ms;
+  }
+  .cpk2048-close:hover { color: var(--text-primary); }
+  .cpk2048-meta {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .cpk2048-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .cpk2048-score-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .cpk2048-score-val {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-display);
+  }
+  .cpk2048-restart {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--text-disabled);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: color 120ms, border-color 120ms;
+  }
+  .cpk2048-restart:hover { color: var(--text-primary); border-color: var(--text-disabled); }
+  .cpk2048-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    background: #080808;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px;
+    user-select: none;
+    touch-action: none;
+  }
+  .cpk-cell {
+    aspect-ratio: 1;
+    border: 1px solid #1a1a1a;
+    border-radius: 5px;
+    background: #0d0d0d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    transition: background 100ms, border-color 100ms;
+  }
+  .cpk-val {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+  }
+  .cpk-sub {
+    font-family: var(--font-body);
+    font-size: 0.5rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+  .cpk2048-hint {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--text-disabled);
+    letter-spacing: 0.06em;
+    text-align: center;
+    margin-top: 12px;
+  }
+  .cpk2048-msg {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #28ca42;
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-top: 8px;
+    min-height: 1.1em;
+  }
+
+
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <span class="id">AMMAR NAWAWI <span>/</span> PROCESS ENGINEER (SPC)</span>
+  <span class="links" id="navLinks"><a href="#evidence">Evidence</a><a href="#bench">The Bench</a><a href="#work">Work</a><a href="#journey">Journey</a><a href="#background">Background</a><a href="#contact">Contact</a></span>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <p class="k">Process Engineering · 6+ years · <b>semiconductor assembly &amp; test</b> · Penang, MY</p>
+  <div class="otw">Open to work</div>
+  <h1>Ammar Nawawi.</h1>
+  <p class="lede">Statistics as instrumentation, not decoration — six years turning noisy production
+  data into decisions, and <b>publishing when the data says no</b>. Every claim on this page links
+  to a live system or a runnable notebook.</p>
+  <div class="acts">
+    <a class="p" href="https://amohdnaw.github.io/case-studies/" target="_blank">Read the case studies</a>
+    <a class="g" href="/cv-ammar-nawawi.pdf" target="_blank">CV</a>
+    <a class="g" href="https://linkedin.com/in/aammarmnawawi/" target="_blank">LinkedIn</a>
+    <a class="g" href="https://github.com/amohdnaw" target="_blank">GitHub</a>
+    <a class="g" href="mailto:ammar.mnawawi@gmail.com">Email</a>
+  </div>
+  <div class="hero-feature">
+    <a href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">
+      Latest — “I audited my own trading system — and killed my best result” <span>→ read</span></a>
+    <span class="pulse" id="hero-pulse" hidden>● live now · Cpk <b id="hero-pulse-cpk">—</b> on the demo channel · 15,000 characteristics under watch</span>
+  </div>
+  <div class="heronums">
+    <div><b class="stat-value">15,000</b><small>characteristics monitored</small></div>
+    <div><b class="stat-value">1,578</b><small>trades audited — edge disproven</small></div>
+    <div><b class="stat-value">4</b><small>systems in production</small></div>
+    <div><b class="stat-value">10+</b><small>engineers using them daily</small></div>
+  </div>
+</div></header>
+
+<section class="chap" id="evidence"><div class="wrap">
+  <div class="chap-head">
+    <div><p class="k">01 — Evidence</p>
+    <h2 class="opener">Published, even when the answer was no.</h2></div>
+    <a class="k" href="https://amohdnaw.github.io/case-studies/" target="_blank" style="color:var(--acc)">amohdnaw.github.io/case-studies ↗</a>
+  </div>
+
+  <article class="spread">
+    <div class="no">I</div>
+    <div>
+      <h3>I audited my own trading system — and killed my best result</h3>
+      <p>A paper-trading log showed <code>+0.48%/trade</code> and a naive bootstrap called it
+      significant. Day-clustered inference, an always-long baseline on identical instances, and a
+      confidence score at <code>r&nbsp;=&nbsp;−0.015</code> said otherwise — an honest null result,
+      with the runnable notebook and the full trade log attached.</p>
+      <div class="tags"><span class="hot">CI includes 0</span><span>day-clustered bootstrap</span><span>runnable notebook</span></div>
+    </div>
+    <div class="side">
+      <span class="badge live">Live</span>
+      <span class="sidestat"><b>n = 1,578</b><small>real trades</small></span>
+      <a class="read" href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">Read the study →</a>
+    </div>
+  </article>
+
+  <article class="spread">
+    <div class="no">II</div>
+    <div>
+      <h3>Rebasing capability statistics at 15,000-characteristic scale</h3>
+      <p>Realigning a production SPC platform to the AIAG &amp; VDA 2026 convention — where flipping
+      the classification gate from within-σ to overall-σ doubled the fail list, and why that was the
+      correct answer.</p>
+      <div class="tags"><span>AIAG &amp; VDA 2026</span><span>Cpk / Cwk / Ppk</span></div>
+    </div>
+    <div class="side"><span class="badge live">Live</span>
+      <a class="read" href="https://amohdnaw.github.io/case-studies/spc-capability-rebase.html" target="_blank">Read the study →</a></div>
+  </article>
+
+  <article class="spread">
+    <div class="no">III</div>
+    <div>
+      <h3>Finding the yield signal in inspection data</h3>
+      <p>Ranking yield-loss drivers by recoverable units instead of defect count — Pareto discipline
+      over intuition in optical-inspection data.</p>
+      <div class="tags"><span>yield analytics</span><span>Pareto</span></div>
+    </div>
+    <div class="side"><span class="badge live">Live</span>
+      <a class="read" href="https://amohdnaw.github.io/case-studies/icos-yield-signal.html" target="_blank">Read the study →</a></div>
+  </article>
+</div></section>
+
+
+<section class="chap" id="bench"><div class="wrap">
+  <div class="chap-head"><div><p class="k">02 — The Bench</p>
+  <h2 class="opener">Live instruments.</h2></div>
+  <span class="k">real fetches · sample fallback · no login</span></div>
+  <div class="bench-grid">
+    <div class="bench-full">  <section id="demo">
+    <p class="section-meta">Live Pull</p>
+    <h2 class="section-title">Live Data — SPC &amp; MSA</h2>
+    <p class="section-sub">Real-time fetches from both production apps — anonymized sample data, no login required.</p>
+
+    <div class="demo-card reveal">
+      <div class="demo-header">
+        <div>
+          <span class="demo-char" id="demo-char">—</span>
+          <span class="demo-unit" id="demo-unit"></span>
+        </div>
+        <div class="demo-stats">
+          <div class="demo-stat">
+            <span class="demo-stat-label">Cpk</span>
+            <span class="demo-stat-value" id="demo-cpk">—</span>
+          </div>
+          <div class="demo-stat">
+            <span class="demo-stat-label">Ppk</span>
+            <span class="demo-stat-value" id="demo-ppk">—</span>
+          </div>
+          <div class="demo-stat">
+            <span class="demo-stat-label">Lot</span>
+            <span class="demo-stat-value" id="demo-lot" style="font-size:0.75rem;">—</span>
+          </div>
+          <span class="demo-badge" id="demo-status">loading...</span>
+        </div>
+      </div>
+      <div class="demo-chart-wrap">
+        <canvas id="spc-chart"></canvas>
+      </div>
+      <div class="demo-legend">
+        <span class="leg-item"><span class="leg-line xbar"></span>X̄</span>
+        <span class="leg-item"><span class="leg-line cl"></span>CL</span>
+        <span class="leg-item"><span class="leg-line ucl"></span>UCL / LCL</span>
+        <span class="leg-item"><span class="leg-line usl"></span>USL / LSL</span>
+        <span class="leg-item"><span class="leg-ooc"></span>OOC signal</span>
+      </div>
+      <span class="demo-source">Data source: <a href="https://spc.amohdnaw.xyz/api/demo" target="_blank">spc.amohdnaw.xyz/api/demo</a> · live fetch on page load</span>
+    </div>
+
+    <!-- MSA DEMO -->
+    <div class="demo-card reveal" style="margin-top: var(--space-32);">
+      <div class="demo-header">
+        <div>
+          <span class="demo-char" id="msa-gauge">—</span>
+          <span class="demo-unit" id="msa-char"></span>
+        </div>
+        <div class="demo-stats">
+          <div class="demo-stat">
+            <span class="demo-stat-label">GR&amp;R %</span>
+            <span class="demo-stat-value" id="msa-grr">—</span>
+          </div>
+          <div class="demo-stat">
+            <span class="demo-stat-label">NDC</span>
+            <span class="demo-stat-value" id="msa-ndc">—</span>
+          </div>
+          <div class="demo-stat">
+            <span class="demo-stat-label">P/T Ratio</span>
+            <span class="demo-stat-value" id="msa-pt" style="font-size:0.75rem;">—</span>
+          </div>
+          <span class="demo-badge" id="msa-verdict">loading...</span>
+        </div>
+      </div>
+      <div class="demo-chart-wrap">
+        <canvas id="msa-chart"></canvas>
+      </div>
+      <div class="demo-legend">
+        <span class="leg-item"><span class="leg-line" style="background:#aeb5c2"></span>EV (Repeatability)</span>
+        <span class="leg-item"><span class="leg-line" style="background:#d9804f"></span>AV (Reproducibility)</span>
+        <span class="leg-item"><span class="leg-line" style="background:#7fa477;height:1px;border-top:2px dashed #7fa477;background:none"></span>10% threshold</span>
+        <span class="leg-item"><span class="leg-line" style="background:none;border-top:2px dashed #d9804f;height:1px"></span>30% threshold</span>
+      </div>
+      <span class="demo-source">Data source: <a href="https://msa.amohdnaw.xyz/api/demo" target="_blank">msa.amohdnaw.xyz/api/demo</a> · live fetch on page load</span>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+</div>
+    <div>  <section id="terminal">
+    <p class="section-meta">Explore</p>
+    <h2 class="section-title">Type a Command</h2>
+    <p class="section-sub">Try: <code style="font-family:var(--font-mono);font-size:0.8rem;">help</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">projects</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">skills</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">cpk</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">play 2048</code>, <code style="font-family:var(--font-mono);font-size:0.8rem;">sudo hire ammar</code></p>
+
+    <div class="iterm-window reveal">
+      <div class="iterm-titlebar">
+        <div class="intro-lights">
+          <span class="intro-light light-red"></span>
+          <span class="intro-light light-yellow"></span>
+          <span class="intro-light light-green"></span>
+        </div>
+        <span class="iterm-title">ammar@portfolio: ~ — bash</span>
+      </div>
+      <div class="iterm-body" id="iterm-body">
+        <div class="iterm-out dim">Portfolio terminal v1.0 · type <span style="color:#d4d4d4">help</span> to get started</div>
+        <div style="height:8px"></div>
+      </div>
+      <div class="iterm-input-row">
+        <span class="iterm-ps2">$</span>
+        <input type="text" id="iterm-input" autocomplete="off" spellcheck="false" placeholder="type a command..." aria-label="terminal input">
+      </div>
+    </div>
+    <p class="iterm-hint">↑ / ↓ to navigate history · click terminal to focus</p>
+  </section>
+
+</div>
+    <div>
+      <div class="sim-tile" data-project="gantry">
+        <h4>Sim — Gantry crane controller</h4>
+        <p>State-feedback anti-swing control (Purdue ME475). Click the track, tune the gains, watch it respond.</p>
+        <span class="go">Open simulation →</span>
+      </div>
+      <div class="sim-tile" data-project="myrio" style="margin-top:14px">
+        <h4>Sim — MyRIO “Sheepdog”</h4>
+        <p>PI velocity control with the real plant models from the ME375 report. Set Ki to zero and watch it fail.</p>
+        <span class="go">Open simulation →</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="chap" id="work"><div class="wrap">
+  <div class="chap-head"><div><p class="k">03 — Work</p>
+  <h2 class="opener">Systems in production.</h2></div>
+  <span class="k">built and shipped — real infrastructure, real data</span></div>
+  <div class="tblwrap"><table class="worktbl">
+    <tr><th>System</th><th>What it does</th><th>Scale</th><th></th></tr>
+    <tr><td>SPC Dashboard</td><td>Control charts, Cpk, stability monitoring — custom-built to go beyond Minitab's constraints.<span class="sub">Python · FastAPI · PostgreSQL · Chart.js</span></td><td class="mono">15,000 chars</td><td class="mono"><a href="https://spc.amohdnaw.xyz" target="_blank">live ↗</a></td></tr>
+    <tr><td>MSA Platform</td><td>GR&amp;R, calibration workflows, study management with research hub and Kanban.<span class="sub">Python · FastAPI · PostgreSQL</span></td><td class="mono">production</td><td class="mono"><a href="https://msa.amohdnaw.xyz" target="_blank">live ↗</a></td></tr>
+    <tr><td>Trading Signals</td><td>Automated pipeline — news, technicals, on-chain metrics, AI briefings. The system audited, and partly discredited, in case study I.<span class="sub">Python · Binance API · Gemini · RAG</span></td><td class="mono">1,578 trades</td><td class="mono"><a href="https://amohdnaw.github.io/case-studies/trading-honesty-audit.html" target="_blank">audit ↗</a></td></tr>
+    <tr><td>Career Ops</td><td>Job scanning → LLM compatibility scoring → tailored CV, fully automated.<span class="sub">Node.js · Playwright · MCP</span></td><td class="mono">pipeline</td><td class="mono"><a href="mailto:ammar.mnawawi@gmail.com">ask</a></td></tr>
+    <tr><td>Recipe Manager</td><td>AI cookbook for Malaysian home cooks — paste any URL, Gemini extracts the recipe. Bilingual EN/MY.<span class="sub">Bun · SQLite · Gemini · PWA</span></td><td class="mono">16 users · 129 recipes</td><td class="mono"><a href="https://recipe.amohdnaw.xyz" target="_blank">live ↗</a></td></tr>
+    <tr><td>Homelab</td><td>Proxmox on Ryzen, 11 LXCs — Plex, Immich, Nextcloud, tunnels. Where all of this runs.<span class="sub">Proxmox · LXC · Cloudflare</span></td><td class="mono">infra</td><td class="mono">writeup soon</td></tr>
+  </table></div>
+</div></section>
+
+<section class="chap" id="journey"><div class="wrap">
+  <div class="chap-head"><div><p class="k">04 — Journey</p>
+  <h2 class="opener">Six years on the line.</h2></div></div>
+  <div class="jrow"><div class="when">MAR 2024 — PRESENT</div><div>
+    <h3>Process Engineer (SPC)</h3><div class="co">TF-AMD Microelectronics (M) Sdn. Bhd.</div>
+    <p>Built and deployed custom SPC dashboards replacing manual JMP workflows — PostgreSQL backend,
+    REST API, live frontend used daily by 10+ engineers. Automated pipelines, Cpk monitoring, WECO
+    signal detection. MSA frameworks for cross-functional data integrity.</p></div></div>
+  <div class="jrow"><div class="when">NOV 2022 — MAR 2024</div><div>
+    <h3>Process Engineer (Visual Mechanical)</h3><div class="co">TF-AMD Microelectronics (M) Sdn. Bhd.</div>
+    <p>Defect trend analysis across BGA, PGA, LGA product families; Pareto analysis on consolidated
+    defect data to drive targeted quality improvements.</p></div></div>
+  <div class="jrow"><div class="when">JAN 2022 — NOV 2022</div><div>
+    <h3>Process Engineer</h3><div class="co">ASE Electronics (M) Sdn. Bhd.</div>
+    <p>Yield improvement for die attach and die sort via JMP data extraction, DOE experiments, and 8D
+    root cause analysis. Reduced die crack defects and cycle-time losses.</p></div></div>
+  <div class="jrow"><div class="when">AUG 2019 — JUN 2021</div><div>
+    <h3>Process Development Engineer</h3><div class="co">Sanmina SCI (M) Sdn. Bhd.</div>
+    <p>New product releases for communication products; led technicians and line leaders across
+    multiple assembly lines; line balancing and root-cause analysis to cut cycle time.</p></div></div>
+</div></section>
+
+<section class="chap" id="background"><div class="wrap">
+  <div class="chap-head"><div><p class="k">05 — Background</p>
+  <h2 class="opener">Foundation &amp; toolkit.</h2></div></div>
+  <div class="bg-grid">
+    <div>
+      <h3>BSc. Mechanical Engineering</h3><div class="co">PURDUE UNIVERSITY · 2014 — 2018</div>
+      <p>CGPA 3.26 · Dean's List · system controls, machine design, vehicle design. The gantry and
+      MyRIO sims on the bench are coursework from here, rebuilt to run in your browser.</p>
+      <h3>American Degree Foundation Program</h3><div class="co">INTEC EDUCATION COLLEGE · 2013 — 2014</div>
+      <p>CGPA 3.57 · TOEFL iBT 104/120.</p>
+    </div>
+    <div class="skills2">
+      <div><h4>Proficient</h4><ul>
+        <li>SPC / Cpk / control charts</li><li>MSA / GR&amp;R</li><li>JMP · Minitab</li>
+        <li>DOE · 8D · FMEA</li><li>JavaScript (vanilla)</li><li>Node.js / REST</li>
+        <li>PostgreSQL</li><li>Linux / Proxmox</li></ul></div>
+      <div><h4>Building</h4><ul>
+        <li>Python (pipelines)</li><li>SQL (window fns, CTEs)</li><li>Claude Code + MCP</li>
+        <li>Data pipelines / ETL</li><li>LLM APIs</li><li>BigQuery</li></ul></div>
+    </div>
+  </div>
+  <div class="flowstrip">
+    <div><i>01</i><b>Problem first</b><p>The tool has to replace something real — Cpk drift undetected, a half-day gauge study.</p></div>
+    <div><i>02</i><b>Agentic session</b><p>Claude Code + MCP: schema to working API in one sitting.</p></div>
+    <div><i>03</i><b>Ship same-day</b><p>Deployed on own infra, used on the line the next morning.</p></div>
+    <div><i>04</i><b>Verify in production</b><p>If the engineers don't open it daily, it gets fixed or killed.</p></div>
+  </div>
+</div></section>
+
+<footer id="contact"><div class="wrap">
+  <div class="talk">Let's talk.</div>
+  <div class="meta"><a href="mailto:ammar.mnawawi@gmail.com">ammar.mnawawi@gmail.com</a><br>
+  <a href="https://linkedin.com/in/aammarmnawawi/" target="_blank">LinkedIn</a> ·
+  <a href="https://github.com/amohdnaw" target="_blank">GitHub</a> ·
+  <a href="https://amohdnaw.github.io/case-studies/" target="_blank">case studies</a></div>
+</div></footer>
+
+<div id="scroll-progress" style="display:none"></div>
+<button id="back-to-top" aria-label="Back to top">↑ top</button>
+<button id="float-term-btn" aria-label="Open terminal">›_</button>
+<button id="hamburger" hidden></button>
+
+
+<script>
+  /* ── SCROLL PROGRESS + BACK TO TOP ─────────────────────── */
+  (function () {
+    const bar    = document.getElementById('scroll-progress');
+    const topBtn = document.getElementById('back-to-top');
+    const footer = document.querySelector('footer');
+
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      bar.style.width = pct + '%';
+      topBtn.classList.toggle('visible', window.scrollY > 400);
+
+      if (footer) {
+        const overlap = window.innerHeight - footer.getBoundingClientRect().top;
+        topBtn.style.bottom = overlap > 0 ? (overlap + 12) + 'px' : '';
+      }
+    }, { passive: true });
+
+    topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  })();
+
+  /* ── COPY EMAIL ─────────────────────────────────────────── */
+  document.querySelectorAll('a[href^="mailto:"]:not(.mailto-real)').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const email = btn.getAttribute('href').replace('mailto:', '');
+      navigator.clipboard.writeText(email).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    });
+  });
+
+  /* ── COPY BUTTONS (data-copy) ───────────────────────────── */
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      });
+    });
+  });
+
+  /* ── DOT PARALLAX (desktop only) ───────────────────────── */
+  (function () {
+    if (window.matchMedia('(hover: none)').matches) return;
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => {
+      tx = (e.clientX / window.innerWidth  - 0.5) * 14;
+      ty = (e.clientY / window.innerHeight - 0.5) * 14;
+    });
+    (function tick() {
+      cx += (tx - cx) * 0.055;
+      cy += (ty - cy) * 0.055;
+      document.body.style.backgroundPosition = cx.toFixed(2) + 'px ' + cy.toFixed(2) + 'px';
+      requestAnimationFrame(tick);
+    })();
+  })();
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        observer.unobserve(el.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal, .reveal-group').forEach(el => {
+    observer.observe(el);
+  });
+
+  /* ── INTERACTIVE TERMINAL ───────────────────────────────── */
+  (function () {
+    const body   = document.getElementById('iterm-body');
+    const input  = document.getElementById('iterm-input');
+    if (!body || !input) return;
+
+    let history = [], hIdx = -1;
+
+    const COMMANDS = {
+      help: () => [
+        { t: 'white', v: 'available commands:' },
+        { t: 'green', v: '  whoami      about me' },
+        { t: 'green', v: '  projects    list all projects' },
+        { t: 'green', v: '  skills      technical skills' },
+        { t: 'green', v: '  contact     get in touch' },
+        { t: 'green', v: '  cpk         live Cpk from spc.amohdnaw.xyz' },
+        { t: 'green', v: '  play 2048   process improvement game' },
+        { t: 'green', v: '  ls          list files' },
+        { t: 'green', v: '  clear       clear terminal' },
+        { t: 'green', v: '  sudo hire ammar' },
+      ],
+      whoami: () => [
+        { t: 'white', v: 'Ammar Nawawi — Process & Data Engineer' },
+        { t: '', v: '6 years in semiconductor manufacturing' },
+        { t: '', v: 'Building SPC, MSA, and automation tools from scratch' },
+        { t: '', v: 'AI-augmented dev: Claude Code · Codex · Gemini · Groq' },
+        { t: '', v: 'Based in Penang, Malaysia · Open to work' },
+      ],
+      projects: () => [
+        { t: 'dim', v: 'NAME                  STATUS   URL' },
+        { t: 'dim', v: '────────────────────────────────────────────────' },
+        { t: 'green', v: 'SPC Dashboard         [LIVE]   spc.amohdnaw.xyz' },
+        { t: 'green', v: 'MSA Platform          [LIVE]   msa.amohdnaw.xyz' },
+        { t: 'green', v: 'Recipe Manager        [LIVE]   recipe.amohdnaw.xyz' },
+        { t: 'green', v: 'Trading Signals       [LIVE]   private' },
+        { t: 'green', v: 'Career Ops Pipeline   [LIVE]   private' },
+        { t: 'yellow', v: 'Homelab (writeup)     [WIP]    amohdnaw.xyz' },
+      ],
+      skills: () => [
+        { t: 'dim', v: 'SKILL                         LEVEL' },
+        { t: 'dim', v: '─────────────────────────────────────' },
+        { t: 'white', v: 'SPC / CPK / Control Charts    ████████████ expert' },
+        { t: 'white', v: 'MSA / GR&R                    ████████████ expert' },
+        { t: 'white', v: 'Claude Code + MCP             ████████████ expert' },
+        { t: 'white', v: 'Python · FastAPI · PostgreSQL ███████████░ advanced' },
+        { t: 'white', v: 'Linux / Proxmox / LXC         ███████████░ advanced' },
+        { t: 'white', v: 'Vanilla JS / Chart.js         ██████████░░ solid' },
+        { t: 'white', v: 'Gemini · Groq · Codex         █████████░░░ learning' },
+      ],
+      contact: () => [
+        { t: 'white', v: 'email      ammar.mnawawi@gmail.com' },
+        { t: 'white', v: 'linkedin   linkedin.com/in/aammarmnawawi' },
+        { t: 'white', v: 'location   Penang, Malaysia' },
+        { t: 'dim',   v: 'status     open to work' },
+      ],
+      ls: () => [
+        { t: 'green', v: 'cv.pdf    spc-dashboard/    msa-platform/    recipe-app/' },
+        { t: 'green', v: 'trading-signals/    career-ops/    homelab/    about.txt' },
+      ],
+      'cat about.txt': () => [
+        { t: 'white', v: 'Engineer who builds the tools that don\'t exist yet.' },
+        { t: '', v: 'When Minitab couldn\'t do what we needed, I built it.' },
+        { t: '', v: 'When the job pipeline was manual, I automated it.' },
+        { t: '', v: 'When the recipe app didn\'t exist, I shipped it.' },
+      ],
+      'sudo hire ammar': () => [
+        { t: 'yellow', v: '[sudo] password for recruiter: ********' },
+        { t: 'green',  v: 'Access granted.' },
+        { t: 'white',  v: 'Initiating hire sequence...' },
+        { t: 'green',  v: '✓ Candidate verified: Ammar Nawawi' },
+        { t: 'green',  v: '✓ Skills check: passed' },
+        { t: 'green',  v: '✓ Vibe check: passed' },
+        { t: 'dim',    v: 'Next step: ammar.mnawawi@gmail.com' },
+      ],
+      'play 2048': () => {
+        setTimeout(() => { if (window.open2048) window.open2048(); }, 80);
+        return [
+          { t: 'green', v: 'launching Process Improvement 2048...' },
+          { t: 'dim',   v: 'goal: merge processes until Cpk 2.00 (World Class)' },
+          { t: 'dim',   v: 'arrow keys or swipe to play' },
+        ];
+      },
+    };
+
+    function print(lines) {
+      lines.forEach(({ t, v }) => {
+        const d = document.createElement('div');
+        d.className = 'iterm-out' + (t ? ' ' + t : '');
+        d.textContent = v;
+        body.appendChild(d);
+      });
+      body.appendChild(Object.assign(document.createElement('div'), { style: 'height:6px' }));
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function printCmd(cmd) {
+      const row = document.createElement('div');
+      row.className = 'iterm-line';
+      row.innerHTML = `<span class="iterm-ps">$</span><span class="iterm-cmd-text">${cmd}</span>`;
+      body.appendChild(row);
+    }
+
+    async function run(raw) {
+      const cmd = raw.trim().toLowerCase();
+      if (!cmd) return;
+
+      history.unshift(raw); hIdx = -1;
+      printCmd(raw);
+
+      if (cmd === 'clear') { body.innerHTML = ''; return; }
+
+      if (cmd === 'cpk') {
+        print([{ t: 'dim', v: 'fetching from spc.amohdnaw.xyz/api/demo...' }]);
+        try {
+          const d = await (await fetch('https://spc.amohdnaw.xyz/api/demo')).json();
+          print([
+            { t: 'white', v: `characteristic  ${d.characteristic} (${d.unit})` },
+            { t: 'white', v: `cpk             ${d.cpk}` },
+            { t: 'white', v: `ppk             ${d.ppk}` },
+            { t: 'white', v: `ucl             ${d.ucl}  lcl  ${d.lcl}` },
+            { t: d.subgroups.some(sg => sg.xbar > d.ucl || sg.xbar < d.lcl) ? 'red' : 'green',
+              v: d.subgroups.some(sg => sg.xbar > d.ucl || sg.xbar < d.lcl) ? 'status  OOC signal detected' : 'status  in control' },
+          ]);
+        } catch { print([{ t: 'red', v: 'error: could not reach API' }]); }
+        return;
+      }
+
+      const handler = COMMANDS[cmd];
+      if (handler) { print(handler()); }
+      else { print([{ t: 'red', v: `command not found: ${cmd} · try 'help'` }]); }
+    }
+
+    input.addEventListener('keydown', async e => {
+      if (e.key === 'Enter') { const v = input.value; input.value = ''; await run(v); }
+      else if (e.key === 'ArrowUp')   { if (hIdx < history.length - 1) input.value = history[++hIdx]; }
+      else if (e.key === 'ArrowDown') { hIdx > 0 ? input.value = history[--hIdx] : (input.value = '', hIdx = -1); }
+    });
+
+    document.getElementById('iterm-body')?.closest('.iterm-window')?.addEventListener('click', () => input.focus());
+  })();
+
+  /* ── SPC LIVE CHART ─────────────────────────────────────── */
+  (function () {
+    async function loadChart() {
+      let d;
+      try {
+        const res = await fetch('https://spc.amohdnaw.xyz/api/demo');
+        d = await res.json();
+      } catch (e) { return; }
+
+      document.getElementById('demo-char').textContent = d.characteristic;
+      document.getElementById('demo-unit').textContent = d.unit;
+      document.getElementById('demo-cpk').textContent  = d.cpk.toFixed(2);
+      document.getElementById('demo-ppk').textContent  = d.ppk.toFixed(2);
+      document.getElementById('demo-lot').textContent  = d.lot;
+
+      const violations = d.subgroups.map(sg => sg.xbar > d.ucl || sg.xbar < d.lcl);
+      const hasViolation = violations.some(Boolean);
+      const badge = document.getElementById('demo-status');
+      badge.textContent = hasViolation ? 'OOC signal detected' : 'in control';
+      badge.className = 'demo-badge ' + (hasViolation ? 'violation' : 'controlled');
+
+      const cs = getComputedStyle(document.documentElement);
+      const gridColor = cs.getPropertyValue('--border').trim() || '#1f1f1f';
+      const tickColor = cs.getPropertyValue('--text-disabled').trim() || '#444';
+      const n = d.subgroups.length;
+      const flat = v => Array(n).fill(v);
+
+      new Chart(document.getElementById('spc-chart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: d.subgroups.map(sg => 'SG' + sg.idx),
+          datasets: [
+            { label: 'USL', data: flat(d.usl), borderColor: '#828b9d', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
+            { label: 'LSL', data: flat(d.lsl), borderColor: '#828b9d', borderWidth: 1, borderDash: [3,5], pointRadius: 0, order: 4 },
+            { label: 'UCL', data: flat(d.ucl), borderColor: '#d9804f', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
+            { label: 'LCL', data: flat(d.lcl), borderColor: '#d9804f', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, order: 3 },
+            { label: 'CL',  data: flat(d.cl),  borderColor: '#7fa477', borderWidth: 1.5, pointRadius: 0, order: 2 },
+            {
+              label: 'X̄',
+              data: d.subgroups.map(sg => sg.xbar),
+              borderColor: '#aeb5c2', borderWidth: 2, tension: 0.25, order: 1,
+              pointBackgroundColor: violations.map(v => v ? '#d9804f' : '#aeb5c2'),
+              pointBorderColor:     violations.map(v => v ? '#d9804f' : '#aeb5c2'),
+              pointRadius:          violations.map(v => v ? 7 : 4),
+              pointHoverRadius:     violations.map(v => v ? 9 : 6),
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ctx.dataset.label === 'X̄'
+                  ? `X̄: ${ctx.parsed.y.toFixed(4)} ${d.unit}` + (violations[ctx.dataIndex] ? ' ⚠ OOC' : '')
+                  : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(4)}`
+              }
+            }
+          },
+          scales: {
+            x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: 'Space Mono', size: 9 }, maxRotation: 0 } },
+            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { family: 'Space Mono', size: 9 }, callback: v => v.toFixed(3) } }
+          }
+        }
+      });
+    }
+    loadChart();
+  })();
+
+  /* ── MSA LIVE CHART ─────────────────────────────────────── */
+  (function () {
+    async function loadMSA() {
+      let d;
+      try {
+        const res = await fetch('https://msa.amohdnaw.xyz/api/demo');
+        d = await res.json();
+      } catch (e) { return; }
+
+      document.getElementById('msa-gauge').textContent  = d.gauge;
+      document.getElementById('msa-char').textContent   = ' · ' + d.characteristic + ' (' + d.unit + ')';
+      document.getElementById('msa-grr').textContent    = d.grr_pct + '%';
+      document.getElementById('msa-ndc').textContent    = d.ndc;
+      document.getElementById('msa-pt').textContent     = d.pt_ratio.toFixed(3);
+
+      const verdict = document.getElementById('msa-verdict');
+      const isAcceptable = d.grr_pct < 10;
+      const isMarginal   = d.grr_pct >= 10 && d.grr_pct < 30;
+      verdict.textContent = d.verdict;
+      verdict.className = 'demo-badge ' + (isAcceptable ? 'controlled' : isMarginal ? 'yellow' : 'violation');
+
+      const cs = getComputedStyle(document.documentElement);
+      const gridColor = cs.getPropertyValue('--border').trim() || '#1f1f1f';
+      const tickColor = cs.getPropertyValue('--text-disabled').trim() || '#444';
+
+      // Bar chart: EV, AV, GR&R components as horizontal bars with threshold lines
+      const labels = ['EV (Repeatability)', 'AV (Reproducibility)', 'GR&R Total'];
+      const values = [d.ev_pct, d.av_pct, d.grr_pct];
+      const colors = ['#aeb5c2', '#d9804f', '#5f6675'];
+
+      new Chart(document.getElementById('msa-chart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: '% of Tolerance',
+              data: values,
+              backgroundColor: colors.map(c => c + 'cc'),
+              borderColor: colors,
+              borderWidth: 1.5,
+              borderRadius: 4,
+              barThickness: 32,
+            },
+            { label: 'Acceptable (10%)', data: [10, 10, 10], type: 'line', borderColor: '#7fa477', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
+            { label: 'Marginal (30%)',   data: [30, 30, 30], type: 'line', borderColor: '#d9804f', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, order: 0 },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x}%` } }
+          },
+          scales: {
+            x: {
+              min: 0, max: 35,
+              grid: { color: gridColor },
+              ticks: { color: tickColor, font: { family: 'Space Mono', size: 9 }, callback: v => v + '%' }
+            },
+            y: { grid: { display: false }, ticks: { color: tickColor, font: { family: 'Space Mono', size: 9 } } }
+          }
+        }
+      });
+    }
+    loadMSA();
+  })();
+
+  /* ── STAT COUNTERS ──────────────────────────────────────── */
+  (function () {
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    function animateCount(el) {
+      const target = parseInt(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400;
+      const start = performance.now();
+      (function step(now) {
+        const p = Math.min((now - start) / duration, 1);
+        el.textContent = Math.round(easeOut(p) * target).toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      })(start);
+    }
+    const statsBar = document.querySelector('.stats-bar');
+    if (statsBar) {
+      const once = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          document.querySelectorAll('.stat-value[data-count]').forEach(animateCount);
+          once.disconnect();
+        }
+      }, { threshold: 0.5 });
+      once.observe(statsBar);
+    }
+  })();
+
+  /* ── LIVE APP PING ───────────────────────────────────────── */
+  document.querySelectorAll('.ping-dot[data-ping]').forEach(dot => {
+    fetch('https://' + dot.dataset.ping, { mode: 'no-cors', signal: AbortSignal.timeout(5000) })
+      .then(() => dot.classList.add('up'))
+      .catch(() => dot.classList.add('down'));
+  });
+
+  /* ── CONSOLE EASTER EGG ──────────────────────────────────── */
+  (function () {
+    const s = 'color:#d9804f;font-size:20px;font-weight:bold;font-family:monospace;padding:2px 6px;';
+    const m = 'color:#999;font-size:11px;font-family:monospace;';
+    const g = 'color:#28ca42;font-family:monospace;font-size:11px;';
+    const d = 'color:#555;font-family:monospace;font-size:11px;';
+    console.log('%cAMMARNAWAWI', s);
+    console.log('%cProcess & Data Engineer  ·  Open to Work', m);
+    console.log('%c─────────────────────────────────────────', d);
+    console.log('%c$ cat contact.txt', g);
+    console.log('%c  email    →  ammar.mnawawi@gmail.com', m);
+    console.log('%c  linkedin →  linkedin.com/in/aammarmnawawi', m);
+    console.log('%c─────────────────────────────────────────', d);
+    console.log('%cNice to meet you. Say hi.', d);
+    console.log('%c─────────────────────────────────────────', d);
+    console.log('%c  hint      →  shift+T to cycle themes', d);
+    console.log('%c  konami    →  ↑↑↓↓←→←→ba  (try it)', d);
+  })();
+
+  /* ── KONAMI CODE ─────────────────────────────────────────── */
+  (function () {
+    const seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let i = 0;
+    document.addEventListener('keydown', e => {
+      i = e.key === seq[i] ? i + 1 : (e.key === seq[0] ? 1 : 0);
+      if (i < seq.length) return;
+      i = 0;
+      if (window.open2048) window.open2048();
+    });
+  })();
+
+  /* ── CURSOR TRAIL ────────────────────────────────────────── */
+  (function () {
+    if (window.matchMedia('(hover: none)').matches) return;
+    let last = 0;
+    document.addEventListener('mousemove', e => {
+      const now = Date.now();
+      if (now - last < 38) return;
+      last = now;
+      const d = document.createElement('div');
+      d.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:5px;height:5px;border-radius:50%;background:var(--text-disabled);pointer-events:none;z-index:9990;transform:translate(-50%,-50%);opacity:0.6;transition:opacity 550ms,transform 550ms;`;
+      document.body.appendChild(d);
+      requestAnimationFrame(() => { d.style.opacity = '0'; d.style.transform = 'translate(-50%,-50%) scale(0)'; });
+      setTimeout(() => d.remove(), 560);
+    });
+  })();
+
+  /* ── ACTIVE NAV ─────────────────────────────────────────── */
+  const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navAnchors.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.35 });
+
+  document.querySelectorAll('section[id]').forEach(s => sectionObserver.observe(s));
+
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.getElementById('navLinks');
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
+  });
+
+  /* ── PROJECT MODAL + SIMULATIONS ─────────────────────────── */
+  (function() { // eslint-disable-line
+    /* ---------- modal HTML ---------- */
+    const overlay = document.createElement('div');
+    overlay.className = 'p-modal-overlay';
+    overlay.id = 'proj-modal';
+    overlay.innerHTML = `
+      <div class="p-modal-box" id="proj-modal-box">
+        <button class="p-modal-close" id="proj-modal-close">✕</button>
+        <div id="proj-modal-content"></div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    const closeBtn = document.getElementById('proj-modal-close');
+    let activeAnim = null;
+
+    function openModal(project) {
+      cancelAnim();
+      const content = document.getElementById('proj-modal-content');
+      content.innerHTML = MODALS[project] ? MODALS[project]() : MODALS['baja']();
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (project === 'gantry') startGantry();
+      if (project === 'myrio')  startMyRIO();
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      cancelAnim();
+    }
+
+    function cancelAnim() {
+      if (activeAnim) { cancelAnimationFrame(activeAnim); activeAnim = null; }
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    document.querySelectorAll('[data-project]').forEach(el => {
+      el.addEventListener('click', () => openModal(el.dataset.project));
+    });
+
+    /* ────────────────────────────────────────────────────────── */
+    /* MODAL CONTENT TEMPLATES                                    */
+    /* ────────────────────────────────────────────────────────── */
+    const MODALS = {
+
+      gantry: () => `
+        <div class="p-modal-tag">ME475 · Control Systems Design · Purdue University</div>
+        <h2 class="p-modal-title">Gantry Crane Model Controller</h2>
+        <p class="p-modal-sub">LabVIEW &nbsp;&middot;&nbsp; NI DAQ &nbsp;&middot;&nbsp; State-Feedback Anti-Swing Control &nbsp;&middot;&nbsp; Rigid Rod Pendulum</p>
+        <div class="sim-wrap">
+          <div class="sim-canvas-area">
+            <span class="sim-canvas-label">Physics Simulation &mdash; click track to move cart</span>
+            <canvas id="g-canvas" height="220"></canvas>
+            <p class="sim-hint">Click anywhere on the track to set target position</p>
+            <div class="sim-controls">
+              <div class="sim-slider-group">
+                <label>Kp (position) = <span id="g-kp-val">6.0</span></label>
+                <input type="range" id="g-kp" min="0" max="20" step="0.5" value="6">
+              </div>
+              <div class="sim-slider-group">
+                <label>Kd (velocity) = <span id="g-kd-val">8.0</span></label>
+                <input type="range" id="g-kd" min="0" max="24" step="0.5" value="8">
+              </div>
+              <div class="sim-slider-group">
+                <label>K&theta; (anti-swing) = <span id="g-kt-val">18</span></label>
+                <input type="range" id="g-kt" min="0" max="50" step="1" value="18">
+              </div>
+              <div class="sim-slider-group">
+                <label>K&theta;d (ang-damp) = <span id="g-ktd-val">4.0</span></label>
+                <input type="range" id="g-ktd" min="0" max="12" step="0.5" value="4">
+              </div>
+            </div>
+            <div id="g-narration" style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-left:3px solid #4fa3f7;border-radius:0 5px 5px 0;font-family:var(--font-body);font-size:0.8rem;color:var(--text-secondary);line-height:1.6;transition:border-left-color 300ms;">Click anywhere on the track to set a target position &mdash; watch the controller respond.</div>
+          </div>
+          <div class="sim-plots">
+            <div class="sim-plot-box">
+              <span class="sim-canvas-label">Cart Position x (m)</span>
+              <canvas id="g-pos-plot" height="110"></canvas>
+            </div>
+            <div class="sim-plot-box">
+              <span class="sim-canvas-label">Rod Angle &theta; (deg)</span>
+              <canvas id="g-ang-plot" height="110"></canvas>
+            </div>
+          </div>
+          <div class="sim-params">
+            <div class="sim-params-title">System Parameters &mdash; placeholder (report values wired in after upload)</div>
+            <div class="sim-param-grid">
+              <div class="sim-param-row">Cart mass M: <span id="gp-M">1.5 kg</span></div>
+              <div class="sim-param-row">Rod mass m: <span id="gp-m">0.30 kg</span></div>
+              <div class="sim-param-row">Rod length L: <span id="gp-L">0.40 m</span></div>
+              <div class="sim-param-row">&omega;n (rod): <span id="gp-wn">6.48 rad/s</span></div>
+              <div class="sim-param-row">Model: <span>Rigid uniform rod</span></div>
+              <div class="sim-param-row">I_pivot: <span>mL&sup2;/3</span></div>
+            </div>
+          </div>
+          <div class="sim-theory">
+            <button class="sim-theory-toggle" id="g-theory-btn">
+              <span>Control Theory &amp; Equations of Motion</span><span id="g-theory-arrow">&#9660;</span>
+            </button>
+            <div class="sim-theory-body" id="g-theory-body">
+              <div class="sim-theory-grid">
+                <div class="sim-theory-col">
+                  <h4>Equations of Motion (Linearised, small &theta;)</h4>
+                  <div class="sim-eq">Generalised coords: x, &theta;
+Rigid rod: I_pivot = mL&sup2;/3
+
+(M+m)&middot;&uml;x + (mL/2)&middot;&theta;&uml; = F          &hellip;(1)
+(mL/2)&middot;&uml;x + (mL&sup2;/3)&middot;&theta;&uml; = &minus;(mgL/2)&theta;  &hellip;(2)
+
+Solving via Cramer's rule (D = mL&sup2;(4M+m)/12):
+
+  &uml;x = (4F + 3mg&theta;) / (4M + m)
+  &theta;&uml; = &minus;6[(M+m)g&theta; + F] / [L(4M+m)]</div>
+                  <p class="sim-theory-note">
+                    The <strong>negative sign</strong> in &theta;&uml; confirms the hanging rod is
+                    naturally stable &mdash; gravity provides a restoring torque
+                    when displaced. Cart movement disturbs &theta;; the controller
+                    suppresses that disturbance.
+                  </p>
+                </div>
+                <div class="sim-theory-col">
+                  <h4>State Space &amp; Control Law</h4>
+                  <div class="sim-eq">State vector: x = [x, &dot;x, &theta;, &dot;&theta;]&sup1;
+
+&dot;x = Ax + Bu,  y = Cx
+
+A = [0  1       0            0    ]
+    [0  0  3mg/(4M+m)        0    ]
+    [0  0       0            1    ]
+    [0  0  &minus;6(M+m)g/L(4M+m)  0    ]
+
+B = [0; 4/(4M+m); 0; &minus;6/L(4M+m)]
+
+Control law (state feedback):
+F = Kp(x_t&minus;x) &minus; Kd&dot;x + K&theta;&middot;&theta; + K&theta;d&middot;&dot;&theta;</div>
+                  <p class="sim-theory-note">
+                    <strong>K&theta; (anti-swing):</strong> positive gain feeds back rod angle to
+                    reduce driving force when the rod lags &mdash; try setting
+                    K&theta;=0 above to see uncontrolled swing.<br>
+                    <strong>Slider tip:</strong> high Kp with low Kd = oscillation;
+                    balanced gains = smooth positional step.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`,
+
+      myrio: () => `
+        <div class="p-modal-tag">ME375 · System Modelling &amp; Analysis · Purdue University · Apr 2017</div>
+        <h2 class="p-modal-title">Autonomous MyRIO Robot &mdash; &ldquo;The Sheepdog&rdquo;</h2>
+        <p class="p-modal-sub">NI myRIO-1900 &nbsp;&middot;&nbsp; LabVIEW FPGA &nbsp;&middot;&nbsp; PI Velocity Controller &nbsp;&middot;&nbsp; Hall-Effect Encoders &nbsp;&middot;&nbsp; Lab Partner: Wai Kien Goh</p>
+        <div class="myrio-tabs">
+          <button class="myrio-tab active" data-myrio-tab="myrio-convtrack">Converging Track &mdash; PI Control</button>
+          <button class="myrio-tab" data-myrio-tab="myrio-pshaped">P-Shaped Course &mdash; Line Following</button>
+        </div>
+        <div id="myrio-convtrack" class="myrio-panel">
+        <div class="sim-wrap">
+          <div class="sim-canvas-area">
+            <span class="sim-canvas-label">Project Track &mdash; top-down view (converging 23&Prime; &rarr; 9&Prime;)</span>
+            <canvas id="r-canvas" height="220"></canvas>
+            <p class="sim-hint">The robot must drive straight through a track that narrows from 23&Prime; down to a tight 9&Prime; gap, then reverse halfway back. The problem: the two drive motors aren&rsquo;t identical &mdash; without correction they spin at slightly different speeds, curving the robot into the wall. Try setting Ki to 0 to see it fail.</p>
+            <div class="sim-controls" style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;">
+              <div class="sim-slider-group">
+                <label>Kp_L = <span id="r-kpl-val">0.295</span></label>
+                <input type="range" id="r-kpl" min="0" max="0.8" step="0.005" value="0.2946">
+              </div>
+              <div class="sim-slider-group">
+                <label>Kp_R = <span id="r-kpr-val">0.277</span></label>
+                <input type="range" id="r-kpr" min="0" max="0.8" step="0.005" value="0.2767">
+              </div>
+              <div class="sim-slider-group">
+                <label>Ki_L = <span id="r-kil-val">1.294</span></label>
+                <input type="range" id="r-kil" min="0" max="3" step="0.01" value="1.294">
+              </div>
+              <div class="sim-slider-group">
+                <label>Ki_R = <span id="r-kir-val">1.264</span></label>
+                <input type="range" id="r-kir" min="0" max="3" step="0.01" value="1.264">
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <button class="p-card-sim-btn" id="r-run-btn">Run Sequence</button>
+              <span id="r-phase-label" style="font-family:var(--font-mono);font-size:0.73rem;color:var(--text-secondary);">IDLE &mdash; set gains and click Run</span>
+            </div>
+            <div id="r-narration" style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-left:3px solid #4fa3f7;border-radius:0 5px 5px 0;font-family:var(--font-body);font-size:0.8rem;color:var(--text-secondary);line-height:1.6;transition:border-left-color 300ms;">Waiting to run. Hit &ldquo;Run Sequence&rdquo; to start &mdash; watch what happens when the robot hits the narrow crossing.</div>
+          </div>
+          <div class="sim-plots">
+            <div class="sim-plot-box">
+              <span class="sim-canvas-label">Left Wheel Speed (ft/s) &mdash; G<sub>LW</sub> = 5.87/(0.73s+1)</span>
+              <canvas id="r-l-plot" height="110"></canvas>
+            </div>
+            <div class="sim-plot-box">
+              <span class="sim-canvas-label">Right Wheel Speed (ft/s) &mdash; G<sub>RW</sub> = 5.81/(0.69s+1)</span>
+              <canvas id="r-r-plot" height="110"></canvas>
+            </div>
+          </div>
+          <div class="sim-params">
+            <div class="sim-params-title">System Parameters &mdash; from project report (ME375 Final, Apr 2017)</div>
+            <div class="sim-param-grid">
+              <div class="sim-param-row">Left plant G_LW: <span>5.87 / (0.73s+1)</span></div>
+              <div class="sim-param-row">Right plant G_RW: <span>5.81 / (0.69s+1)</span></div>
+              <div class="sim-param-row">C_LW (PI): <span>(0.2946s + 1.294) / s</span></div>
+              <div class="sim-param-row">C_RW (PI): <span>(0.2767s + 1.264) / s</span></div>
+              <div class="sim-param-row">Response time target: <span>0.5671 s</span></div>
+              <div class="sim-param-row">Reference speed: <span>1.5 ft/s</span></div>
+              <div class="sim-param-row">Track: <span>23&Prime; wide &rarr; 9&Prime; crossing</span></div>
+              <div class="sim-param-row">Task: <span>74&Prime; fwd &rarr; reverse 37&Prime;</span></div>
+            </div>
+          </div>
+          <div class="sim-theory">
+            <button class="sim-theory-toggle" id="r-theory-btn">
+              <span>Control Theory &amp; PI Design</span><span id="r-theory-arrow">&#9660;</span>
+            </button>
+            <div class="sim-theory-body" id="r-theory-body">
+              <canvas id="pi-ctrl-diag" style="width:100%;max-width:520px;display:block;margin:0 auto 14px;border-radius:4px;"></canvas>
+              <div class="sim-theory-grid">
+                <div class="sim-theory-col">
+                  <h4>Plant Model &mdash; System ID (LabVIEW Step Response)</h4>
+                  <div class="sim-eq">Step input &rarr; encoder period &rarr; ft/s conversion:
+  period / 40,000,000 &times; scaling = ft/s
+
+Left wheel (G_LW):
+  K_dc = 5.87,  &tau; = 0.73 s
+  G_LW(s) = 5.87 / (0.73s + 1)
+
+Right wheel (G_RW):
+  K_dc = 5.81,  &tau; = 0.69 s
+  G_RW(s) = 5.81 / (0.69s + 1)
+
+Each wheel ID&rsquo;d separately &mdash; motors
+are never perfectly matched.</div>
+                  <p class="sim-theory-note">
+                    ID done in <strong>LabVIEW FPGA</strong> on the physical myRIO-1900.
+                    First-order model valid because gearbox + back-EMF dominate.
+                    The slight mismatch (K 5.87 vs 5.81, &tau; 0.73 vs 0.69) is why
+                    two separate controllers were needed for straight-line motion.
+                  </p>
+                </div>
+                <div class="sim-theory-col">
+                  <h4>PI Controller &mdash; Designed in MATLAB</h4>
+                  <div class="sim-eq">C(s) = Kp + Ki/s = (Kp&middot;s + Ki) / s
+
+Left:   C_LW(s) = (0.2946s + 1.294) / s
+Right:  C_RW(s) = (0.2767s + 1.264) / s
+
+Design target: response time = 0.5671 s
+
+Discrete implementation (Euler forward):
+  e[k]     = sp &minus; v[k]
+  &Sigma;e[k]   = &Sigma;e[k&minus;1] + e[k]&middot;&Delta;t
+  u[k]     = Kp&middot;e[k] + Ki&middot;&Sigma;e[k]
+  u_sat    = clamp(u, 0, 100%)  &larr; PWM limit</div>
+                  <p class="sim-theory-note">
+                    <strong>Try it:</strong> set both Ki sliders to 0 &rarr; pure-P control,
+                    robot drifts and hits the wall before crossing.
+                    Set to report values (default) &rarr; both wheels track 1.5 ft/s,
+                    robot passes the 9&Prime; crossing cleanly.
+                    High Ki &gt; 2.5 &rarr; integrator windup oscillation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div id="myrio-pshaped" class="myrio-panel" style="display:none">
+        <div class="sim-wrap">
+          <div class="sim-canvas-area">
+            <span class="sim-canvas-label">P-Shaped Course &mdash; top-down view (stem forward, right semicircle bowl)</span>
+            <canvas id="lf-canvas" height="220"></canvas>
+            <p class="sim-hint">Robot drives straight then turns right into the semicircle &mdash; adjust Kp/Kd to see overshoot vs smooth tracking</p>
+            <div class="sim-controls" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 16px;">
+              <div class="sim-slider-group">
+                <label>Kp = <span id="lf-kp-val">2.50</span></label>
+                <input type="range" id="lf-kp" min="0" max="6" step="0.05" value="2.5">
+              </div>
+              <div class="sim-slider-group">
+                <label>Kd = <span id="lf-kd-val">0.30</span></label>
+                <input type="range" id="lf-kd" min="0" max="3" step="0.05" value="0.3">
+              </div>
+              <div class="sim-slider-group">
+                <label>Speed = <span id="lf-base-val">1.20</span></label>
+                <input type="range" id="lf-base" min="0.3" max="2.5" step="0.05" value="1.2">
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <button class="p-card-sim-btn" id="lf-reset-btn">Reset</button>
+              <span id="lf-status" style="font-family:var(--font-mono);font-size:0.73rem;color:#4fa3f7;">IDLE &mdash; switching to this tab starts the sim</span>
+            </div>
+            <div id="lf-narration" style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-left:3px solid #4fa3f7;border-radius:0 5px 5px 0;font-family:var(--font-body);font-size:0.8rem;color:var(--text-secondary);line-height:1.6;transition:border-left-color 300ms;">Robot follows the white P-shaped line using five IR sensors &mdash; watch the error plot as it rounds the bowl.</div>
+          </div>
+          <div class="sim-plots">
+            <div class="sim-plot-box">
+              <span class="sim-canvas-label">Lateral Error (sensor weighted centroid)</span>
+              <canvas id="lf-err-plot" height="110"></canvas>
+            </div>
+            <div class="sim-plot-box">
+              <span class="sim-canvas-label">Wheel Speeds (norm.) &mdash; left <span style="color:#28ca42">&#9644;</span> right <span style="color:#4fa3f7">&#9644;</span></span>
+              <canvas id="lf-spd-plot" height="110"></canvas>
+            </div>
+          </div>
+          <div class="sim-params">
+            <div class="sim-params-title">System Parameters &mdash; estimated from hardware (no project report available)</div>
+            <div class="sim-param-grid">
+              <div class="sim-param-row">Sensor array: <span>5&times; IR reflectance (QTR-style)</span></div>
+              <div class="sim-param-row">Sensor weights: <span>[&minus;2, &minus;1, 0, +1, +2]</span></div>
+              <div class="sim-param-row">Controller: <span>PD &mdash; steer = Kp&middot;e + Kd&middot;&Delta;e/&Delta;t</span></div>
+              <div class="sim-param-row">Drive mix: <span>L = speed &minus; steer, R = speed + steer</span></div>
+              <div class="sim-param-row">Hardware: <span>NI myRIO-1900, L298N, Hall encoders</span></div>
+              <div class="sim-param-row">Course: <span>Stem (straight) + right semicircle bowl</span></div>
+              <div class="sim-param-row">Bowl radius: <span>&asymp; half the stem length</span></div>
+              <div class="sim-param-row">Gains: <span>Placeholder &mdash; no report available</span></div>
+            </div>
+          </div>
+          <div class="sim-theory">
+            <button class="sim-theory-toggle" id="lf-theory-btn">
+              <span>Control Theory &amp; Sensor Design</span><span id="lf-theory-arrow">&#9660;</span>
+            </button>
+            <div class="sim-theory-body" id="lf-theory-body">
+              <canvas id="pd-ctrl-diag" style="width:100%;max-width:520px;display:block;margin:0 auto 14px;border-radius:4px;"></canvas>
+              <div class="sim-theory-grid">
+                <div class="sim-theory-col">
+                  <h4>IR Sensor Array &mdash; Weighted Centroid Error</h4>
+                  <div class="sim-eq">5 sensors, positions: [&minus;2,&minus;1,0,+1,+2]
+
+s[i] = 1 (sees white line), 0 (dark)
+
+Weighted centroid:
+  e = &Sigma;(w[i]&middot;s[i]) / &Sigma;(s[i])
+
+[0,1,1,0,0] &rarr; e = (&minus;1+0)/2 = &minus;0.5 (left)
+[0,0,1,0,0] &rarr; e = 0         (centred)
+[0,0,1,1,0] &rarr; e = (0+1)/2 = 0.5   (right)</div>
+                  <p class="sim-theory-note">
+                    Negative e = line left of robot &rarr; steer left.
+                    Positive e = line right &rarr; steer right. Zero = centred.
+                    White reflects more IR than the dark floor surface.
+                  </p>
+                </div>
+                <div class="sim-theory-col">
+                  <h4>PD Steering &mdash; Why No I Term Here?</h4>
+                  <div class="sim-eq">steer = Kp&middot;e + Kd&middot;&Delta;e/&Delta;t
+
+  L = base &minus; steer
+  R = base + steer
+
+vs. straight-line project:
+  PI needed: velocity has motor DC bias
+  PD here: sensor gives absolute lateral
+  position each frame &rarr; no integral bias
+
+Try:
+  Kp=5, Kd=0   &rarr; overshoot on the curve
+  Kp=2.5, Kd=0.8 &rarr; smooth nominal
+  Kp=1,   Kd=0   &rarr; misses the turn</div>
+                  <p class="sim-theory-note">
+                    Same myRIO hardware and PI velocity loops as the straight-line
+                    project, with a <strong>PD steering layer</strong> added on top.
+                    The P course was the follow-up challenge: closed-loop velocity +
+                    closed-loop lateral position.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>`,
+
+      baja: () => `
+        <div class="p-modal-tag">Purdue University &middot; SAE International &middot; 2017&ndash;2018</div>
+        <h2 class="p-modal-title">BAJA SAE Racing &mdash; Driver Interface</h2>
+        <p class="p-modal-sub">Mechanical Design &nbsp;&middot;&nbsp; SolidWorks &nbsp;&middot;&nbsp; Team Lead</p>
+        <div class="sim-placeholder">
+          <span class="sim-ph-icon">🏎</span>
+          <p>Detailed writeup and media coming soon.</p>
+          <p style="margin-top:8px;font-size:0.75rem;color:var(--text-disabled)">Led driver interface team for Baja SAE 2018 &mdash; full design cycle from CAD to competition day at Purdue.</p>
+        </div>`
+    };
+
+    /* ── controller block diagram helpers ─────────────────────── */
+    function _diagBlock(ctx, x, y, w, h, label, sub) {
+      ctx.save();
+      ctx.fillStyle = '#d9804f22'; ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = '#d9804f'; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      if (sub) {
+        ctx.fillStyle = '#e8eaed'; ctx.font = 'bold 10px monospace';
+        ctx.fillText(label, x + w / 2, y + h / 2 - 7);
+        ctx.fillStyle = '#8ab4f8'; ctx.font = '9px monospace';
+        ctx.fillText(sub, x + w / 2, y + h / 2 + 7);
+      } else {
+        ctx.fillStyle = '#e8eaed'; ctx.font = 'bold 10px monospace';
+        ctx.fillText(label, x + w / 2, y + h / 2);
+      }
+      ctx.restore();
+    }
+
+    function _diagArrow(ctx, x1, y1, x2, y2) {
+      ctx.save();
+      ctx.strokeStyle = '#8ab4f8'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      const ang = Math.atan2(y2 - y1, x2 - x1);
+      ctx.fillStyle = '#8ab4f8';
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - 7 * Math.cos(ang - 0.4), y2 - 7 * Math.sin(ang - 0.4));
+      ctx.lineTo(x2 - 7 * Math.cos(ang + 0.4), y2 - 7 * Math.sin(ang + 0.4));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    function drawPIDiagram() {
+      const cv = document.getElementById('pi-ctrl-diag');
+      if (!cv) return;
+      cv.width = cv.offsetWidth || 500; cv.height = 120;
+      const ctx = cv.getContext('2d'), W = cv.width, cy = 52;
+      const sumCX = 82, sumR = 13;
+      const piX = 107, piW = 108, bh = 34, by = cy - 17;
+      const plX = 233, plW = 108;
+      const outX = 355;
+
+      /* Setpoint label */
+      ctx.save();
+      ctx.fillStyle = '#e8eaed'; ctx.font = 'bold 10px monospace';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('Setpoint', 8, cy - 4);
+      ctx.fillStyle = '#8ab4f8'; ctx.font = '9px monospace';
+      ctx.fillText('1.5 ft/s', 8, cy + 9);
+      ctx.restore();
+
+      _diagArrow(ctx, 56, cy, sumCX - sumR, cy);
+
+      /* Summing junction */
+      ctx.save();
+      ctx.strokeStyle = '#d9804f'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(sumCX, cy, sumR, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = '#8ab4f8'; ctx.font = 'bold 13px monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('Σ', sumCX, cy);
+      ctx.font = '8px monospace';
+      ctx.fillText('+', sumCX - 7, cy - 2);
+      ctx.fillText('−', sumCX + 7, cy + 2);
+      ctx.restore();
+
+      _diagArrow(ctx, sumCX + sumR, cy, piX, cy);
+
+      /* PI block — reads live slider values */
+      const kpEl = document.getElementById('r-kpl'), kiEl = document.getElementById('r-kil');
+      const kpV = kpEl ? parseFloat(kpEl.value).toFixed(3) : '0.295';
+      const kiV = kiEl ? parseFloat(kiEl.value).toFixed(3) : '1.294';
+      _diagBlock(ctx, piX, by, piW, bh, 'PI Controller', 'Kp=' + kpV + '  Ki=' + kiV);
+
+      _diagArrow(ctx, piX + piW, cy, plX, cy);
+      _diagBlock(ctx, plX, by, plW, bh, 'Plant  G(s)', 'K / (τs + 1)');
+      _diagArrow(ctx, plX + plW, cy, outX, cy);
+
+      /* Output label */
+      ctx.save();
+      ctx.fillStyle = '#e8eaed'; ctx.font = '10px monospace';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText('v(t)', outX + 3, cy);
+      ctx.restore();
+
+      /* Feedback path */
+      const fbY = cy + 48;
+      ctx.save();
+      ctx.strokeStyle = '#8ab4f860'; ctx.lineWidth = 1.2; ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(outX, cy); ctx.lineTo(outX, fbY);
+      ctx.lineTo(sumCX, fbY); ctx.lineTo(sumCX, cy + sumR + 1);
+      ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#8ab4f860';
+      ctx.beginPath();
+      ctx.moveTo(sumCX, cy + sumR + 1);
+      ctx.lineTo(sumCX - 5, cy + sumR + 8);
+      ctx.lineTo(sumCX + 5, cy + sumR + 8);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#8ab4f8'; ctx.font = '9px monospace';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('encoder feedback', (outX + sumCX) / 2, fbY - 3);
+      ctx.restore();
+
+      /* Title */
+      ctx.save();
+      ctx.fillStyle = '#8ab4f8'; ctx.font = '9px monospace';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('closed-loop per-wheel velocity control', W - 6, 12);
+      ctx.restore();
+    }
+
+    function drawPDDiagram() {
+      const cv = document.getElementById('pd-ctrl-diag');
+      if (!cv) return;
+      cv.width = cv.offsetWidth || 500; cv.height = 120;
+      const ctx = cv.getContext('2d'), W = cv.width, cy = 55;
+      const bh = 34, by = cy - 17;
+      const margin = 8, arrW = 16, forkW = 20, labelW = 54;
+      const bw = Math.floor((W - 2 * margin - 3 * arrW - forkW - labelW) / 4);
+      const x0 = margin;
+      const x1 = x0 + bw + arrW;
+      const x2 = x1 + bw + arrW;
+      const x3 = x2 + bw + arrW;
+      const forkX = x3 + bw + 6;
+      const outX  = forkX + forkW;
+
+      _diagBlock(ctx, x0, by, bw, bh, 'IR Array', '5 sensors');
+      _diagArrow(ctx, x0 + bw, cy, x1, cy);
+
+      _diagBlock(ctx, x1, by, bw, bh, 'Centroid', 'e in [-2,+2]');
+      _diagArrow(ctx, x1 + bw, cy, x2, cy);
+
+      const kpEl = document.getElementById('lf-kp'), kdEl = document.getElementById('lf-kd');
+      const kpV = kpEl ? parseFloat(kpEl.value).toFixed(1) : '2.5';
+      const kdV = kdEl ? parseFloat(kdEl.value).toFixed(2) : '0.30';
+      _diagBlock(ctx, x2, by, bw, bh, 'PD Steer', 'Kp=' + kpV + ' Kd=' + kdV);
+      _diagArrow(ctx, x2 + bw, cy, x3, cy);
+
+      _diagBlock(ctx, x3, by, bw, bh, 'Drive Mix', 'L=v-s, R=v+s');
+
+      /* Fork to L / R wheels */
+      const lY = cy - 18, rY = cy + 18;
+      ctx.save();
+      ctx.strokeStyle = '#8ab4f8'; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x3 + bw, cy); ctx.lineTo(forkX, cy);
+      ctx.lineTo(forkX, lY);  ctx.moveTo(forkX, cy); ctx.lineTo(forkX, rY);
+      ctx.stroke();
+      ctx.restore();
+      _diagArrow(ctx, forkX, lY, outX + 2, lY);
+      _diagArrow(ctx, forkX, rY, outX + 2, rY);
+
+      ctx.save();
+      ctx.fillStyle = '#e8eaed'; ctx.font = '10px monospace';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText('L wheel', outX + 5, lY);
+      ctx.fillText('R wheel', outX + 5, rY);
+      ctx.restore();
+
+      /* Title */
+      ctx.save();
+      ctx.fillStyle = '#8ab4f8'; ctx.font = '9px monospace';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('PD line-following control loop', W - 6, 12);
+      ctx.restore();
+    }
+
+    /* theory toggle handler — re-bound after each modal open */
+    function bindTheoryToggles() {
+      document.querySelectorAll('.sim-theory-toggle').forEach(btn => {
+        if (btn.dataset.bound) return;  /* prevent double-binding when tabs re-init */
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('open');
+          const body = btn.nextElementSibling;
+          body.classList.toggle('open');
+          const arrow = btn.querySelector('span:last-child');
+          if (arrow) arrow.innerHTML = body.classList.contains('open') ? '&#9650;' : '&#9660;';
+          if (body.classList.contains('open')) {
+            if (btn.id === 'r-theory-btn')  requestAnimationFrame(drawPIDiagram);
+            if (btn.id === 'lf-theory-btn') requestAnimationFrame(drawPDDiagram);
+          }
+        });
+      });
+    }
+
+    /* ────────────────────────────────────────────────────────── */
+    /* GANTRY CRANE SIMULATION                                    */
+    /* Physics: linearised rigid-rod pendulum on cart            */
+    /*                                                           */
+    /* Lagrangian EOM (uniform rod, I_pivot = mL²/3):           */
+    /*   (M+m)ẍ + (mL/2)θ̈ = F                   ...(1)         */
+    /*   (mL/2)ẍ + (mL²/3)θ̈ = −(mgL/2)θ         ...(2)         */
+    /*                                                           */
+    /* Solving (Cramer, D = mL²(4M+m)/12):                      */
+    /*   ẍ      = (4F + 3mgθ) / (4M+m)                         */
+    /*   θ̈      = −6[(M+m)gθ + F] / [L(4M+m)]                 */
+    /*                                                           */
+    /* Controller: state-feedback                                */
+    /*   F = Kp(xt−x) − Kd·ẋ + Kθ·θ + Kθd·θ̇                 */
+    /* ────────────────────────────────────────────────────────── */
+    function startGantry() {
+      const cv  = document.getElementById('g-canvas');
+      const pPl = document.getElementById('g-pos-plot');
+      const aPl = document.getElementById('g-ang-plot');
+      if (!cv || !pPl || !aPl) return;
+
+      bindTheoryToggles();
+
+      const W = cv.offsetWidth; cv.width = W; cv.height = 220;
+      pPl.width = pPl.offsetWidth; pPl.height = 110;
+      aPl.width = aPl.offsetWidth; aPl.height = 110;
+
+      const ctx  = cv.getContext('2d');
+      const pCtx = pPl.getContext('2d');
+      const aCtx = aPl.getContext('2d');
+
+      /* Physical parameters — placeholder, replaced from report */
+      const M = 1.5, m = 0.30, L = 0.40, g = 9.81;
+      const DENOM = 4 * M + m;            /* 4M+m = 6.3 */
+      const TRACK_HALF = 0.85;
+      const PPM = (W * 0.82) / (2 * TRACK_HALF);
+      const CX = W / 2;
+      const TRACK_Y = 72;
+      const ROD_PX = L * PPM;             /* rod length in pixels */
+
+      /* State */
+      let x = 0, xdot = 0, theta = 0.02, thetadot = 0;  /* tiny initial disturbance */
+      let xt = 0;
+      const DT = 1 / 240;  /* substep: 4 per frame → more stable */
+
+      /* Gain sliders */
+      function gains() {
+        return {
+          Kp:  parseFloat(document.getElementById('g-kp').value  || 6),
+          Kd:  parseFloat(document.getElementById('g-kd').value  || 8),
+          Kt:  parseFloat(document.getElementById('g-kt').value  || 18),
+          Ktd: parseFloat(document.getElementById('g-ktd').value || 4)
+        };
+      }
+      ['g-kp','g-kd','g-kt','g-ktd'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => {
+          const lbl = document.getElementById(id + '-val');
+          if (lbl) lbl.textContent = parseFloat(el.value).toFixed(1);
+        });
+      });
+
+      cv.addEventListener('click', e => {
+        const rect = cv.getBoundingClientRect();
+        const px = e.clientX - rect.left;
+        xt = Math.max(-TRACK_HALF, Math.min(TRACK_HALF, (px - CX) / PPM));
+      });
+
+      const BUF = 240;
+      const posBuf = new Float32Array(BUF);
+      const angBuf = new Float32Array(BUF);
+      const tgtBuf = new Float32Array(BUF);
+      let bufIdx = 0;
+
+      function drawPlot(c, buf, tgtVal, yMin, yMax, color) {
+        const PW = c.canvas.width, PH = c.canvas.height;
+        c.clearRect(0, 0, PW, PH);
+        c.fillStyle = '#080808'; c.fillRect(0, 0, PW, PH);
+
+        const norm = v => PH - ((v - yMin) / (yMax - yMin)) * PH;
+
+        /* zero */
+        c.strokeStyle = 'rgba(255,255,255,0.07)'; c.lineWidth = 1;
+        c.beginPath(); c.moveTo(0, norm(0)); c.lineTo(PW, norm(0)); c.stroke();
+
+        /* target dashed */
+        if (tgtVal !== null) {
+          const ty = norm(tgtVal);
+          c.strokeStyle = 'rgba(255,210,0,0.35)'; c.setLineDash([4,4]);
+          c.beginPath(); c.moveTo(0, ty); c.lineTo(PW, ty); c.stroke();
+          c.setLineDash([]);
+        }
+
+        /* data */
+        c.strokeStyle = color; c.lineWidth = 1.5;
+        c.beginPath();
+        for (let i = 0; i < BUF; i++) {
+          const bi = (bufIdx + i) % BUF;
+          const px = (i / (BUF - 1)) * PW;
+          const py = norm(buf[bi]);
+          i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+        }
+        c.stroke();
+      }
+
+      let lastF = 0;
+      function physicsStep() {
+        const { Kp, Kd, Kt, Ktd } = gains();
+        /* controller */
+        const F_raw = Kp*(xt - x) - Kd*xdot + Kt*theta + Ktd*thetadot;
+        const F = Math.max(-25, Math.min(25, F_raw));
+        lastF = F;
+
+        /* rigid-rod EOM (linearised) */
+        const x_dd  = (4*F + 3*m*g*theta) / DENOM;
+        const th_dd = -6 * ((M+m)*g*theta + F) / (L * DENOM);
+
+        x        += xdot     * DT;
+        xdot     += x_dd     * DT;
+        theta    += thetadot * DT;
+        thetadot += th_dd    * DT;
+
+        if (x >  TRACK_HALF) { x =  TRACK_HALF; xdot *= -0.1; }
+        if (x < -TRACK_HALF) { x = -TRACK_HALF; xdot *= -0.1; }
+      }
+
+      function drawScene() {
+        const H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#080808'; ctx.fillRect(0, 0, W, H);
+
+        /* -- track rail -- */
+        const TX0 = CX - TRACK_HALF * PPM, TX1 = CX + TRACK_HALF * PPM;
+        ctx.fillStyle = 'rgba(255,255,255,0.07)';
+        ctx.fillRect(TX0, TRACK_Y - 4, TX1 - TX0, 8);
+        /* rail groove */
+        ctx.fillStyle = 'rgba(255,255,255,0.12)';
+        ctx.fillRect(TX0, TRACK_Y - 1, TX1 - TX0, 2);
+        /* end stops */
+        [TX0, TX1].forEach(ex => {
+          ctx.fillStyle = '#ff5f57';
+          ctx.fillRect(ex - 2, TRACK_Y - 14, 4, 28);
+        });
+
+        /* -- target marker -- */
+        const txPx = CX + xt * PPM;
+        ctx.strokeStyle = 'rgba(255,210,0,0.5)';
+        ctx.lineWidth = 1; ctx.setLineDash([3,4]);
+        ctx.beginPath(); ctx.moveTo(txPx, TRACK_Y - 28); ctx.lineTo(txPx, TRACK_Y + 28);
+        ctx.stroke(); ctx.setLineDash([]);
+
+        /* -- cart -- */
+        const cxPx = CX + x * PPM;
+        const CART_W = 48, CART_H = 22;
+        /* cart body */
+        ctx.fillStyle = '#1a3a8a';
+        ctx.beginPath();
+        ctx.roundRect(cxPx - CART_W/2, TRACK_Y - CART_H, CART_W, CART_H, 3);
+        ctx.fill();
+        ctx.strokeStyle = '#3a6ef5'; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(cxPx - CART_W/2, TRACK_Y - CART_H, CART_W, CART_H, 3);
+        ctx.stroke();
+        /* wheels */
+        ctx.fillStyle = '#555';
+        ctx.strokeStyle = '#888'; ctx.lineWidth = 1;
+        [-16, 16].forEach(wx => {
+          ctx.beginPath();
+          ctx.arc(cxPx + wx, TRACK_Y + 5, 6, 0, Math.PI*2);
+          ctx.fill(); ctx.stroke();
+        });
+        /* pivot dot */
+        ctx.fillStyle = '#aaa';
+        ctx.beginPath(); ctx.arc(cxPx, TRACK_Y - CART_H/2, 3, 0, Math.PI*2); ctx.fill();
+
+        /* -- RIGID ROD (ruler) -- */
+        const pivX = cxPx;
+        const pivY = TRACK_Y - 2;          /* pivot at cart bottom center */
+        const rodTipX = pivX + Math.sin(theta) * ROD_PX;
+        const rodTipY = pivY + Math.cos(theta) * ROD_PX;
+
+        /* rod width perpendicular direction */
+        const ROD_W = 7;
+        const perpX = -Math.cos(theta) * (ROD_W / 2);
+        const perpY =  Math.sin(theta) * (ROD_W / 2);
+
+        const swing_deg = Math.abs(theta * 180 / Math.PI);
+        const rodColor  = swing_deg > 8 ? '#ff5f57' : swing_deg > 3 ? '#ffbd2e' : '#e8d5a0';
+
+        /* rod body */
+        ctx.beginPath();
+        ctx.moveTo(pivX + perpX, pivY + perpY);
+        ctx.lineTo(rodTipX + perpX, rodTipY + perpY);
+        ctx.lineTo(rodTipX - perpX, rodTipY - perpY);
+        ctx.moveTo(pivX - perpX, pivY - perpY);
+        ctx.lineTo(rodTipX - perpX, rodTipY - perpY);
+        ctx.fillStyle = rodColor;
+
+        ctx.beginPath();
+        ctx.moveTo(pivX + perpX, pivY + perpY);
+        ctx.lineTo(rodTipX + perpX, rodTipY + perpY);
+        ctx.lineTo(rodTipX - perpX, rodTipY - perpY);
+        ctx.lineTo(pivX - perpX, pivY - perpY);
+        ctx.closePath();
+        ctx.fillStyle = rodColor; ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1;
+        ctx.stroke();
+
+        /* tick marks along the rod (ruler effect) */
+        ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 0.8;
+        const nTicks = 6;
+        for (let t = 1; t < nTicks; t++) {
+          const frac = t / nTicks;
+          const tx = pivX + Math.sin(theta) * ROD_PX * frac;
+          const ty = pivY + Math.cos(theta) * ROD_PX * frac;
+          const tickLen = (t % 2 === 0 ? 5 : 3);
+          ctx.beginPath();
+          ctx.moveTo(tx + perpX * tickLen / (ROD_W/2), ty + perpY * tickLen / (ROD_W/2));
+          ctx.lineTo(tx - perpX * tickLen / (ROD_W/2), ty - perpY * tickLen / (ROD_W/2));
+          ctx.stroke();
+        }
+
+        /* rod tip cap */
+        ctx.fillStyle = swing_deg > 8 ? '#cc3333' : '#aaa';
+        ctx.beginPath(); ctx.arc(rodTipX, rodTipY, 4.5, 0, Math.PI*2); ctx.fill();
+
+        /* -- HUD -- */
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '10px monospace';
+        ctx.fillText('x=' + x.toFixed(3) + 'm  xt=' + xt.toFixed(3) + 'm  θ=' + (theta*180/Math.PI).toFixed(1) + '°  F=' + lastF.toFixed(1) + 'N', 10, 16);
+      }
+
+
+      let _gNarrLast = '', _gNarrCandidate = '', _gNarrFrames = 0;
+      const G_NARR_HOLD = 90;  /* ~1.5 s at 60 fps before message switches */
+      function updateGantryNarration() {
+        const el = document.getElementById('g-narration');
+        if (!el) return;
+        const swing_deg = Math.abs(theta * 180 / Math.PI);
+        const posDiff   = Math.abs(xt - x);
+        const { Kt } = gains();
+        let msg, col;
+        if (Kt < 0.5 && swing_deg > 5) {
+          msg = 'Kθ = 0 — no anti-swing correction. The pendulum swings freely as the cart moves; the controller only cares about cart position. This is what the system does without full state-feedback.';
+          col = '#ff5f57';
+        } else if (swing_deg > 10) {
+          msg = 'Large swing detected! The anti-swing term is working hard to pull the pendulum back upright while still driving the cart toward the target. Try increasing Kθ to damp it faster.';
+          col = '#ff5f57';
+        } else if (posDiff > 0.08 && swing_deg < 4) {
+          msg = 'Cart moving to target — the position gain (Kp) pushes it across the track. The Kθ term watches the pendulum angle and applies a counter-force the moment it starts tilting, keeping it nearly upright throughout the move.';
+          col = '#4fa3f7';
+        } else if (posDiff > 0.04 && swing_deg >= 4) {
+          msg = 'Pendulum swinging while moving — Kp drives toward the target, Kθ fights the swing. This is the key tradeoff: move fast versus keep the load steady. Lower Kd or higher speed amplifies the swing.';
+          col = '#ffbd2e';
+        } else if (posDiff < 0.04 && swing_deg > 2) {
+          msg = 'Cart reached the target — now settling the pendulum. Small corrective forces are applied until the rod hangs still. A well-tuned Kθd (angular damping) kills this residual swing quickly.';
+          col = '#ffbd2e';
+        } else {
+          msg = 'System settled — cart at target, pendulum hanging still. Click anywhere on the track rail to set a new target and watch the controller move the cart without letting the load swing.';
+          col = '#28ca42';
+        }
+        /* moving states respond quickly; settled/swing states wait for stability */
+        const fastLane = posDiff > 0.06;
+        const hold = fastLane ? 3 : G_NARR_HOLD;
+        if (msg === _gNarrCandidate) {
+          _gNarrFrames++;
+        } else {
+          _gNarrCandidate = msg; _gNarrFrames = 0;
+        }
+        if (msg !== _gNarrLast && _gNarrFrames >= hold) {
+          _gNarrLast = msg;
+          el.textContent = msg;
+          el.style.borderLeftColor = col;
+        }
+      }
+      function loop() {
+        /* 4 physics substeps per frame */
+        for (let s = 0; s < 4; s++) physicsStep();
+        /* record once per frame */
+        posBuf[bufIdx % BUF] = x;
+        angBuf[bufIdx % BUF] = theta * (180 / Math.PI);
+        tgtBuf[bufIdx % BUF] = xt;
+        bufIdx++;
+
+        drawScene();
+        updateGantryNarration();
+        drawPlot(pCtx, posBuf, xt, -1, 1, '#4fa3f7');
+        drawPlot(aCtx, angBuf, 0,  -25, 25, '#f7a24f');
+        activeAnim = requestAnimationFrame(loop);
+      }
+      activeAnim = requestAnimationFrame(loop);
+    }
+
+    /* ────────────────────────────────────────────────────────── */
+    /* MYRIO ROBOT SIMULATIONS                                    */
+    /* Tab 1 — Converging track, PI velocity controller          */
+    /* Tab 2 — P-shaped line following, PD steering              */
+    /* ────────────────────────────────────────────────────────── */
+    function startMyRIO() {
+      bindTheoryToggles();
+
+      /* ── tab switching ── */
+      document.querySelectorAll('[data-myrio-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-myrio-tab]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.myrio-panel').forEach(p => p.style.display = 'none');
+          document.getElementById(btn.dataset.myrioTab).style.display = '';
+          cancelAnim();
+          if (btn.dataset.myrioTab === 'myrio-convtrack') initConvTrack();
+          else                                             initPShape();
+        });
+      });
+
+      /* ── start default tab ── */
+      initConvTrack();
+
+      /* ════════════════════════════════════════════════════════ */
+      /* TAB 1: CONVERGING TRACK — PI VELOCITY CONTROLLER        */
+      /* Plant (1st order, from sys ID):                         */
+      /*   G_LW(s) = 5.87 / (0.73s + 1)   left wheel           */
+      /*   G_RW(s) = 5.81 / (0.69s + 1)   right wheel          */
+      /* PI controller (MATLAB design, target 0.5671s):          */
+      /*   C_LW: Kp=0.2946, Ki=1.294                            */
+      /*   C_RW: Kp=0.2767, Ki=1.264                            */
+      /* ════════════════════════════════════════════════════════ */
+      function initConvTrack() {
+        const cv  = document.getElementById('r-canvas');
+        const lPl = document.getElementById('r-l-plot');
+        const rPl = document.getElementById('r-r-plot');
+        if (!cv || !lPl || !rPl) return;
+
+        const W = cv.offsetWidth; cv.width = W; cv.height = 220;
+        lPl.width = lPl.offsetWidth; lPl.height = 110;
+        rPl.width = rPl.offsetWidth; rPl.height = 110;
+
+        const ctx  = cv.getContext('2d');
+        const lCtx = lPl.getContext('2d');
+        const rCtx = rPl.getContext('2d');
+
+        /* plant params from report */
+        const KL = 5.87, tauL = 0.73;
+        const KR = 5.81, tauR = 0.69;
+        const WHEEL_BASE = 10 / 12;
+        const SP = 1.5;
+        const DT = 1 / 240;
+
+        let vL = 0, vR = 0, eIntL = 0, eIntR = 0;
+        let pos_in = 0, drift_in = 0, heading = 0;
+        let phase = 'IDLE', wallHit = false;
+
+        const TY0 = 20, TY1 = 202;
+        const TH  = TY1 - TY0;
+        const cx  = W / 2;
+        const SHW = W * 0.36;
+        const CHW = W * 0.115;
+        const PX_PER_IN_LEN = TH / 74;
+        const PX_PER_IN_WID = SHW / 11.5;
+
+        function trackHalfPx(pos) {
+          const f = Math.max(0, Math.min(1, pos / 74));
+          return SHW * (1 - f) + CHW * f;
+        }
+        function trackHalfIn(pos) {
+          const f = Math.max(0, Math.min(1, pos / 74));
+          return 11.5 * (1 - f) + 4.5 * f;
+        }
+
+        function gains() {
+          return {
+            KpL: parseFloat(document.getElementById('r-kpl').value || 0.2946),
+            KiL: parseFloat(document.getElementById('r-kil').value || 1.294),
+            KpR: parseFloat(document.getElementById('r-kpr').value || 0.2767),
+            KiR: parseFloat(document.getElementById('r-kir').value || 1.264)
+          };
+        }
+        [['r-kpl','r-kpl-val',3],['r-kil','r-kil-val',3],['r-kpr','r-kpr-val',3],['r-kir','r-kir-val',3]].forEach(([id,lid,dp]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener('input', () => {
+            const l = document.getElementById(lid); if (l) l.textContent = parseFloat(el.value).toFixed(dp);
+            const body = document.getElementById('r-theory-body');
+            if (body && body.classList.contains('open')) drawPIDiagram();
+          });
+        });
+
+        const runBtn  = document.getElementById('r-run-btn');
+        const phaseEl = document.getElementById('r-phase-label');
+        function resetSim() {
+          vL = 0; vR = 0; eIntL = 0; eIntR = 0;
+          pos_in = 0; drift_in = 0; heading = 0;
+          wallHit = false;
+          lBuf.fill(0); rBuf.fill(0); bufIdx = 0;
+          phase = 'FORWARD';
+          updatePhaseLabel();
+        }
+        if (runBtn) runBtn.addEventListener('click', resetSim);
+
+        function updatePhaseLabel() {
+          if (!phaseEl) return;
+          if (wallHit) {
+            phaseEl.textContent = 'WALL HIT at ' + pos_in.toFixed(0) + '"';
+            phaseEl.style.color = '#ff5f57';
+          } else if (phase === 'IDLE') {
+            phaseEl.textContent = 'IDLE — set gains and click Run';
+            phaseEl.style.color = 'var(--text-secondary)';
+          } else if (phase === 'FORWARD') {
+            phaseEl.textContent = 'FORWARD →  ' + pos_in.toFixed(1) + '" / 74"';
+            phaseEl.style.color = '#4fa3f7';
+          } else if (phase === 'REVERSE') {
+            phaseEl.textContent = 'REVERSE ←  ' + pos_in.toFixed(1) + '"';
+            phaseEl.style.color = '#ffbd2e';
+          } else {
+            phaseEl.textContent = 'DONE — stopped at 37" ✓';
+            phaseEl.style.color = '#28ca42';
+          }
+          updateNarration();
+        }
+
+        let _rNarrLast = '', _rNarrCandidate = '', _rNarrFrames = 0;
+        const R_NARR_HOLD = 90;  /* ~1.5 s at 60 fps before message switches */
+        function updateNarration() {
+          const el = document.getElementById('r-narration');
+          if (!el) return;
+          let msg = '', col = '#4fa3f7';
+          if (wallHit) {
+            msg = 'Wall hit — the robot drifted too far sideways and clipped the edge. With Ki = 0, the speed error is never fully eliminated, so the wheel mismatch builds up over the whole run and the robot curves off course. Restore Ki to the default values to see it pass cleanly.';
+            col = '#ff5f57';
+          } else if (phase === 'IDLE') {
+            msg = 'Waiting to run. Hit "Run Sequence" to start — watch what happens when the robot hits the narrow crossing.';
+            col = '#4fa3f7';
+          } else if (phase === 'FORWARD') {
+            if (pos_in < 25) {
+              msg = 'Wheels spinning up from rest. The PI controller measures the gap between actual wheel speed and the 1.5 ft/s target, applying a correction every millisecond to close that gap.';
+            } else {
+              msg = 'Both wheels locked at 1.5 ft/s — the track narrows ahead. The controllers keep both wheels matched so the robot threads through the 9″ crossing straight instead of drifting into the wall.';
+            }
+            col = '#4fa3f7';
+          } else if (phase === 'REVERSE') {
+            msg = 'Crossed! Now reversing at −1.5 ft/s back to the 37″ midpoint. The integral term resets at the turnaround so the built-up correction doesn\'t fight the new direction. Watch the robot brake to a stop exactly at the halfway mark.';
+            col = '#ffbd2e';
+          } else if (phase === 'DONE') {
+            msg = 'Done — forward 74″, reverse to 37″. Both PI loops kept the wheels matched through the whole run. Now try setting Ki to 0 and running again to see what the robot does without the integral correction.';
+            col = '#28ca42';
+          }
+          if (!msg) return;
+          /* active phases (running/reverse/done/wall) switch quickly; idle waits for stability */
+          const fastLane = phase !== 'IDLE' || wallHit;
+          const hold = fastLane ? 3 : R_NARR_HOLD;
+          if (msg === _rNarrCandidate) {
+            _rNarrFrames++;
+          } else {
+            _rNarrCandidate = msg; _rNarrFrames = 0;
+          }
+          if (msg !== _rNarrLast && _rNarrFrames >= hold) {
+            _rNarrLast = msg;
+            el.textContent = msg;
+            el.style.borderLeftColor = col;
+          }
+        }
+
+        const BUF = 240;
+        const lBuf = new Float32Array(BUF);
+        const rBuf = new Float32Array(BUF);
+        let bufIdx = 0;
+
+        function piPlantStep(v, eInt, sp, Kp, Ki, Kdc, tau) {
+          const e    = sp - v;
+          const newI = eInt + e * DT;
+          const u    = Math.max(-1, Math.min(1, Kp * e + Ki * newI));
+          const vDot = (Kdc * u - v) / tau;
+          return { v: v + vDot * DT, eInt: newI };
+        }
+
+        function getSP() {
+          return phase === 'FORWARD' ? SP : phase === 'REVERSE' ? -SP : 0;
+        }
+
+        function physicsStep() {
+          if (phase === 'IDLE' || phase === 'DONE' || wallHit) return;
+          const { KpL, KiL, KpR, KiR } = gains();
+          const sp = getSP();
+          const rL = piPlantStep(vL, eIntL, sp, KpL, KiL, KL, tauL);
+          const rR = piPlantStep(vR, eIntR, sp, KpR, KiR, KR, tauR);
+          vL = rL.v; eIntL = rL.eInt;
+          vR = rR.v; eIntR = rR.eInt;
+          const vAvg = (vL + vR) / 2;
+          heading = Math.max(-0.4, Math.min(0.4, heading + (vR - vL) / WHEEL_BASE * DT));
+          pos_in   += vAvg * Math.cos(heading) * 12 * DT;
+          drift_in += vAvg * Math.sin(heading) * 12 * DT;
+          if (phase === 'FORWARD' && pos_in >= 74) {
+            pos_in = 74; phase = 'REVERSE'; eIntL = 0; eIntR = 0;
+          } else if (phase === 'REVERSE' && pos_in <= 37) {
+            pos_in = 37; phase = 'DONE'; vL = 0; vR = 0;
+          }
+          if (Math.abs(drift_in) > trackHalfIn(pos_in) - 3.0) wallHit = true;
+        }
+
+        function drawTrack() {
+          const H = cv.height;
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = '#080808'; ctx.fillRect(0, 0, W, H);
+          ctx.beginPath();
+          ctx.moveTo(cx - SHW, TY1); ctx.lineTo(cx + SHW, TY1);
+          ctx.lineTo(cx + CHW, TY0); ctx.lineTo(cx - CHW, TY0);
+          ctx.closePath();
+          ctx.fillStyle = '#12121e'; ctx.fill();
+          ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(80,100,200,0.5)';
+          ctx.beginPath();
+          ctx.moveTo(cx - SHW, TY1); ctx.lineTo(cx - CHW, TY0);
+          ctx.moveTo(cx + SHW, TY1); ctx.lineTo(cx + CHW, TY0);
+          ctx.stroke();
+          const czH = 24;
+          ctx.fillStyle = 'rgba(255,200,0,0.12)';
+          ctx.beginPath();
+          ctx.moveTo(cx - CHW, TY0); ctx.lineTo(cx + CHW, TY0);
+          ctx.lineTo(cx + CHW, TY0 + czH); ctx.lineTo(cx - CHW, TY0 + czH);
+          ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = 'rgba(255,200,0,0.45)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+          ctx.beginPath(); ctx.moveTo(cx - CHW, TY0 + czH); ctx.lineTo(cx + CHW, TY0 + czH);
+          ctx.stroke(); ctx.setLineDash([]);
+          ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1; ctx.setLineDash([5,10]);
+          ctx.beginPath(); ctx.moveTo(cx, TY1); ctx.lineTo(cx, TY0);
+          ctx.stroke(); ctx.setLineDash([]);
+          const y37 = TY1 - (37 / 74) * TH;
+          const hw37 = trackHalfPx(37);
+          ctx.strokeStyle = 'rgba(255,100,80,0.55)'; ctx.lineWidth = 1; ctx.setLineDash([4,5]);
+          ctx.beginPath(); ctx.moveTo(cx - hw37, y37); ctx.lineTo(cx + hw37, y37);
+          ctx.stroke(); ctx.setLineDash([]);
+          ctx.font = '9px monospace'; ctx.textAlign = 'center';
+          ctx.fillStyle = 'rgba(255,200,0,0.7)';
+          ctx.fillText('CROSSING 9"', cx, TY0 + 12);
+          ctx.fillStyle = 'rgba(255,255,255,0.28)';
+          ctx.fillText('START 23"', cx, TY1 + 12);
+          ctx.fillStyle = 'rgba(255,100,80,0.6)';
+          ctx.fillText('37" STOP', cx + hw37 + 22, y37 - 2);
+          ctx.textAlign = 'left';
+          const clampedPos = Math.max(0, Math.min(74, pos_in));
+          const robotY = TY1 - clampedPos * PX_PER_IN_LEN;
+          const pxPerIn = trackHalfPx(clampedPos) / trackHalfIn(clampedPos);
+          const driftPx = drift_in * pxPerIn;
+          const robotX  = cx + driftPx;
+          const RW = 26, RH = 16;
+          if (!wallHit) {
+            ctx.save();
+            ctx.translate(robotX, robotY);
+            ctx.rotate(heading);
+            const col = phase === 'DONE' ? '#28ca42' : phase === 'REVERSE' ? '#ffbd2e' : '#2a6ef5';
+            ctx.fillStyle = col;
+            ctx.beginPath(); ctx.roundRect(-RW/2, -RH/2, RW, RH, 3); ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.roundRect(-RW/2, -RH/2, RW, RH, 3); ctx.stroke();
+            ctx.fillStyle = '#444';
+            [[-RW/2-4, -RH/2+1],[ RW/2, -RH/2+1],[-RW/2-4, 2],[ RW/2, 2]].forEach(([wx,wy]) => ctx.fillRect(wx, wy, 4, RH/2-2));
+            const dir = phase === 'REVERSE' ? 1 : -1;
+            ctx.fillStyle = 'rgba(255,255,255,0.6)';
+            ctx.beginPath(); ctx.moveTo(0, dir*7); ctx.lineTo(-4, dir*2); ctx.lineTo(4, dir*2); ctx.closePath(); ctx.fill();
+            ctx.restore();
+          } else {
+            ctx.fillStyle = '#ff5f57'; ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center';
+            ctx.fillText('✕ WALL HIT', cx + driftPx, TY1 - clampedPos * PX_PER_IN_LEN - 8);
+            ctx.textAlign = 'left';
+          }
+          ctx.fillStyle = 'rgba(255,255,255,0.28)'; ctx.font = '9px monospace';
+          ctx.fillText('pos=' + pos_in.toFixed(1) + '"  drift=' + drift_in.toFixed(2) + '"  vL=' + vL.toFixed(2) + '  vR=' + vR.toFixed(2) + ' ft/s', 6, 14);
+        }
+
+        function drawSpeedPlot(c, buf, color) {
+          const PW = c.canvas.width, PH = c.canvas.height;
+          c.clearRect(0, 0, PW, PH);
+          c.fillStyle = '#080808'; c.fillRect(0, 0, PW, PH);
+          const yMin = -2, yMax = 2;
+          const norm = v => PH - ((v - yMin) / (yMax - yMin)) * PH;
+          c.strokeStyle = 'rgba(255,255,255,0.06)'; c.lineWidth = 1;
+          c.beginPath(); c.moveTo(0, norm(0)); c.lineTo(PW, norm(0)); c.stroke();
+          const curSP = getSP();
+          if (curSP !== 0) {
+            c.strokeStyle = 'rgba(255,210,0,0.35)'; c.setLineDash([4,4]);
+            c.beginPath(); c.moveTo(0, norm(curSP)); c.lineTo(PW, norm(curSP)); c.stroke();
+            c.setLineDash([]);
+            const bw = Math.abs(norm(curSP * 1.02) - norm(curSP));
+            c.fillStyle = 'rgba(40,202,66,0.07)';
+            c.fillRect(0, norm(curSP) - bw, PW, bw * 2);
+          }
+          c.strokeStyle = color; c.lineWidth = 1.5;
+          c.beginPath();
+          for (let i = 0; i < BUF; i++) {
+            const bi = (bufIdx + i) % BUF;
+            const px = (i / (BUF - 1)) * PW;
+            const py = norm(buf[bi]);
+            i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+          }
+          c.stroke();
+        }
+
+        function loop() {
+          for (let s = 0; s < 3; s++) physicsStep();
+          lBuf[bufIdx % BUF] = vL;
+          rBuf[bufIdx % BUF] = vR;
+          bufIdx++;
+          drawTrack();
+          updatePhaseLabel();
+          drawSpeedPlot(lCtx, lBuf, '#28ca42');
+          drawSpeedPlot(rCtx, rBuf, '#4fa3f7');
+          activeAnim = requestAnimationFrame(loop);
+        }
+        activeAnim = requestAnimationFrame(loop);
+      } /* end initConvTrack */
+
+      /* ════════════════════════════════════════════════════════ */
+      /* TAB 2: P-SHAPED COURSE — PD LINE FOLLOWING              */
+      /* Path: straight stem up → right semicircle bowl down     */
+      /* → return straight down stem                             */
+      /* Gains: illustrative placeholders (no report available)  */
+      /* ════════════════════════════════════════════════════════ */
+      function initPShape() {
+        const cv  = document.getElementById('lf-canvas');
+        const ePl = document.getElementById('lf-err-plot');
+        const sPl = document.getElementById('lf-spd-plot');
+        if (!cv || !ePl || !sPl) return;
+
+        const W = cv.offsetWidth; cv.width = W; cv.height = 220;
+        ePl.width = ePl.offsetWidth; ePl.height = 110;
+        sPl.width = sPl.offsetWidth; sPl.height = 110;
+        const H = 220;
+        const ctx  = cv.getContext('2d');
+        const eCtx = ePl.getContext('2d');
+        const sCtx = sPl.getContext('2d');
+
+        /* ── P-shaped course geometry ──
+           Stem: straight line on left, going up
+           Bowl: semicircle on right, connecting at top and mid of stem
+           Return: straight back down to start
+
+           The letter P, viewed from above:
+             |
+             |  ← stem up (segment 1)
+             |
+            /|
+           | |  ← semicircle bowl going right (segment 2)
+            \|
+             |  ← return down stem (segment 3)
+             |                                                     */
+        const STEM_X   = Math.round(W * 0.24);
+        const STEM_BOT = H - 22;          /* bottom of stem */
+        const STEM_TOP = 20;              /* top of stem = top of bowl */
+        const BOWL_R   = Math.round((STEM_BOT - STEM_TOP) / 3);  /* ≈59px bowl radius */
+        const BOWL_CY  = STEM_TOP + BOWL_R;  /* bowl centre y */
+        /* bowl bottom (where it rejoins stem) */
+        const BOWL_BOT = BOWL_CY + BOWL_R;   /* = STEM_TOP + 2*BOWL_R */
+        const LHW = 5;  /* line half-width px */
+
+        /* build path waypoints */
+        const path = [];
+        const N1 = 60;   /* stem up */
+        const N2 = 80;   /* semicircle (180°) */
+        const N3 = 30;   /* return down */
+
+        /* segment 1: stem going up */
+        for (let i = 0; i <= N1; i++)
+          path.push([STEM_X, STEM_BOT - (STEM_BOT - STEM_TOP) * i / N1]);
+
+        /* segment 2: semicircle, CW from top (angle -π/2) to bottom (angle +π/2)
+           going RIGHT first: x = STEM_X + BOWL_R*cos(a), y = BOWL_CY + BOWL_R*sin(a)
+           a from -π/2 → 0 → +π/2  (positive y = downward in canvas = CW) */
+        for (let i = 1; i <= N2; i++) {
+          const a = -Math.PI / 2 + (i / N2) * Math.PI;
+          path.push([STEM_X + BOWL_R * Math.cos(a), BOWL_CY + BOWL_R * Math.sin(a)]);
+        }
+
+        /* segment 3: return straight down from BOWL_BOT to STEM_BOT */
+        for (let i = 1; i <= N3; i++)
+          path.push([STEM_X, BOWL_BOT + (STEM_BOT - BOWL_BOT) * i / N3]);
+
+        const TOTAL = path.length;
+
+        /* cumulative arc lengths */
+        const arcL = [0];
+        for (let i = 1; i < TOTAL; i++) {
+          const dx = path[i][0] - path[i-1][0], dy = path[i][1] - path[i-1][1];
+          arcL.push(arcL[i-1] + Math.sqrt(dx*dx + dy*dy));
+        }
+        const TLEN     = arcL[TOTAL - 1];
+        const SEG1_END = arcL[N1];          /* end of stem-up */
+        const SEG2_END = arcL[N1 + N2];     /* end of semicircle */
+
+        /* point at arc length s (binary search) */
+        function ptAt(s) {
+          s = Math.max(0, Math.min(TLEN - 0.01, s));
+          let lo = 0, hi = TOTAL - 1;
+          while (hi - lo > 1) { const m = (lo + hi) >> 1; arcL[m] <= s ? lo = m : hi = m; }
+          const f = (s - arcL[lo]) / (arcL[hi] - arcL[lo] + 1e-9);
+          return [path[lo][0] + f * (path[hi][0] - path[lo][0]),
+                  path[lo][1] + f * (path[hi][1] - path[lo][1])];
+        }
+
+        /* robot state */
+        let rx = STEM_X, ry = STEM_BOT - 4;
+        let heading = -Math.PI / 2;   /* facing up */
+        let progress = 0;
+        let pidx = 0;    /* nearest path index (anchor for search window) */
+        let prevErr = 0, finished = false;
+        const WBASE = 18;  /* wheel base px */
+
+        /* plot buffers */
+        const BUF = 180;
+        const errBuf = new Float32Array(BUF);
+        const lBuf   = new Float32Array(BUF);
+        const rBuf   = new Float32Array(BUF);
+        let bufIdx = 0;
+
+        /* sensor geometry: 5 IR sensors in a row */
+        const SW = [-2, -1, 0, 1, 2];  /* weights */
+        const SS = 7;    /* px spacing between sensors */
+        const SA = 10;   /* px ahead of robot centre */
+
+        /* sliders */
+        function gains() {
+          return {
+            Kp:  parseFloat(document.getElementById('lf-kp')?.value  ?? '2.5'),
+            Kd:  parseFloat(document.getElementById('lf-kd')?.value  ?? '0.8'),
+            spd: parseFloat(document.getElementById('lf-base')?.value ?? '1.2') * 52
+          };
+        }
+        [['lf-kp','lf-kp-val',2],['lf-kd','lf-kd-val',2],['lf-base','lf-base-val',2]].forEach(([id,lid,dp]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener('input', () => {
+            const l = document.getElementById(lid); if (l) l.textContent = parseFloat(el.value).toFixed(dp);
+            const body = document.getElementById('lf-theory-body');
+            if (body && body.classList.contains('open')) drawPDDiagram();
+          });
+        });
+
+        function updStatus(txt, col) {
+          const el = document.getElementById('lf-status');
+          if (el) { el.textContent = txt; el.style.color = col; }
+        }
+
+        function resetSim() {
+          rx = STEM_X; ry = STEM_BOT - 4; heading = -Math.PI / 2;
+          progress = 0; pidx = 0; prevErr = 0; finished = false;
+          errBuf.fill(0); lBuf.fill(0); rBuf.fill(0); bufIdx = 0;
+          updStatus('FOLLOWING LINE', '#4fa3f7');
+        }
+        const resetBtn = document.getElementById('lf-reset-btn');
+        if (resetBtn) resetBtn.addEventListener('click', resetSim);
+
+        /* IR sensors: 5 dots positioned ahead of robot, perpendicular to heading */
+        let lastSensors = null;
+        function readSensors() {
+          const px = Math.cos(heading + Math.PI/2), py = Math.sin(heading + Math.PI/2);
+          const fx = Math.cos(heading) * SA,        fy = Math.sin(heading) * SA;
+          const lo = Math.max(0, pidx - 50), hi2 = Math.min(TOTAL - 1, pidx + 50);
+          return SW.map(w => {
+            const sx = rx + fx + px * w * SS, sy = ry + fy + py * w * SS;
+            let best = Infinity;
+            for (let j = lo; j <= hi2; j++) {
+              const dd = (path[j][0]-sx)*(path[j][0]-sx) + (path[j][1]-sy)*(path[j][1]-sy);
+              if (dd < best) best = dd;
+            }
+            return { on: best < LHW * LHW, sx, sy };
+          });
+        }
+
+        const DT = 1 / 60;
+
+        function physicsStep() {
+          if (finished) return;
+          const { Kp, Kd, spd } = gains();
+
+          /* update nearest path index */
+          const lo = Math.max(0, pidx - 25), hi2 = Math.min(TOTAL - 1, pidx + 25);
+          let best = Infinity;
+          for (let j = lo; j <= hi2; j++) {
+            const dd = (path[j][0]-rx)*(path[j][0]-rx) + (path[j][1]-ry)*(path[j][1]-ry);
+            if (dd < best) { best = dd; pidx = j; }
+          }
+
+          /* lookahead 22px ahead */
+          const la = ptAt(Math.min(TLEN, arcL[pidx] + 22));
+
+          /* lateral error = signed perp distance to lookahead direction */
+          const px = Math.cos(heading + Math.PI/2), py = Math.sin(heading + Math.PI/2);
+          const latErr = (la[0] - rx) * px + (la[1] - ry) * py;
+
+          /* cap raw derivative to prevent spike when entering the curve
+             (error jumps from 0 on the straight stem to a finite value
+             on the first curved frame — without cap, Kd·dErr would be
+             ~100× too large and fling the robot off the path) */
+          const rawDErr = (latErr - prevErr) / DT;
+          const dErr    = Math.max(-12, Math.min(12, rawDErr));
+          prevErr       = latErr;
+
+          /* clamp steering so neither wheel goes into reverse */
+          const maxSteer = spd * 0.75;
+          const steer = Math.max(-maxSteer, Math.min(maxSteer, Kp * latErr + Kd * dErr));
+
+          const vL = spd - steer, vR = spd + steer;
+          heading += (vR - vL) / WBASE * DT;
+          rx += ((vL + vR) / 2) * Math.cos(heading) * DT;
+          ry += ((vL + vR) / 2) * Math.sin(heading) * DT;
+          progress = Math.min(TLEN, progress + Math.max(0, (vL + vR) / 2) * DT);
+
+          /* sensor readings for display */
+          lastSensors = readSensors();
+          let ws = 0, ns = 0;
+          lastSensors.forEach((s, i) => { if (s.on) { ws += SW[i]; ns++; } });
+          const dispErr = ns > 0 ? ws / ns : 0;
+
+          errBuf[bufIdx % BUF] = dispErr;
+          lBuf[bufIdx % BUF]   = vL / (spd + 1e-9);
+          rBuf[bufIdx % BUF]   = vR / (spd + 1e-9);
+          bufIdx++;
+
+          /* phase labels */
+          if (progress >= TLEN - 6) {
+            finished = true;
+            updStatus('COURSE DONE ✓', '#28ca42');
+          } else if (progress < SEG1_END) {
+            updStatus('STEM → fwd ' + (progress / SEG1_END * 100 | 0) + '%', '#4fa3f7');
+          } else if (progress < SEG2_END) {
+            updStatus('BOWL → semicircle ' + ((progress - SEG1_END) / (SEG2_END - SEG1_END) * 100 | 0) + '%', '#4fa3f7');
+          } else {
+            updStatus('RETURN → back ' + ((progress - SEG2_END) / (TLEN - SEG2_END) * 100 | 0) + '%', '#ffbd2e');
+          }
+        }
+
+        function drawCourse() {
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = '#080808'; ctx.fillRect(0, 0, W, H);
+
+          /* P-shaped white line: stem + semicircle */
+          ctx.strokeStyle = 'rgba(255,255,255,0.88)';
+          ctx.lineWidth = LHW * 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+          /* stem (full height — traversed up and back down) */
+          ctx.beginPath();
+          ctx.moveTo(STEM_X, STEM_BOT);
+          ctx.lineTo(STEM_X, STEM_TOP);
+          ctx.stroke();
+
+          /* semicircle bowl: CW from top (-π/2) to bottom (+π/2) */
+          ctx.beginPath();
+          ctx.arc(STEM_X, BOWL_CY, BOWL_R, -Math.PI / 2, Math.PI / 2, false);
+          ctx.stroke();
+
+          /* start/finish marker */
+          ctx.fillStyle = '#28ca42';
+          ctx.beginPath(); ctx.arc(STEM_X, STEM_BOT, 7, 0, 2 * Math.PI); ctx.fill();
+          ctx.fillStyle = '#080808'; ctx.font = 'bold 7px monospace'; ctx.textAlign = 'center';
+          ctx.fillText('S/F', STEM_X, STEM_BOT + 3);
+
+          /* direction arrow on the bowl */
+          const arA = 0;  /* rightmost point of semicircle */
+          const ax = STEM_X + BOWL_R * Math.cos(arA), ay = BOWL_CY + BOWL_R * Math.sin(arA);
+          ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(ax, ay - 8); ctx.lineTo(ax, ay + 8);
+          ctx.moveTo(ax, ay + 8); ctx.lineTo(ax - 5, ay + 3);
+          ctx.moveTo(ax, ay + 8); ctx.lineTo(ax + 5, ay + 3);
+          ctx.stroke();
+
+          /* labels */
+          ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.font = '9px monospace'; ctx.textAlign = 'left';
+          ctx.fillText('stem', STEM_X + 4, Math.round(STEM_BOT - (STEM_BOT - STEM_TOP) * 0.7));
+          ctx.fillText('bowl', STEM_X + BOWL_R + 4, BOWL_CY);
+
+          /* robot body */
+          ctx.save();
+          ctx.translate(rx, ry);
+          ctx.rotate(heading + Math.PI / 2);
+          ctx.fillStyle = finished ? '#28ca42' : '#2a6ef5';
+          ctx.beginPath(); ctx.roundRect(-10, -7, 20, 14, 3); ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillStyle = 'rgba(255,255,255,0.65)';
+          ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(-4, -6); ctx.lineTo(4, -6); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#333';
+          [[-13, -5], [-13, 2], [10, -5], [10, 2]].forEach(([wx, wy]) => ctx.fillRect(wx, wy, 3, 5));
+          ctx.restore();
+
+          /* IR sensor dots */
+          if (lastSensors) {
+            lastSensors.forEach(s => {
+              ctx.beginPath(); ctx.arc(s.sx, s.sy, 3.5, 0, 2 * Math.PI);
+              ctx.fillStyle = s.on ? '#ffe000' : '#252525';
+              ctx.strokeStyle = s.on ? '#ffaa00' : '#444';
+              ctx.lineWidth = 1; ctx.fill(); ctx.stroke();
+            });
+          }
+
+          /* HUD */
+          ctx.fillStyle = 'rgba(255,255,255,0.24)'; ctx.font = '9px monospace'; ctx.textAlign = 'left';
+          ctx.fillText('pos(' + rx.toFixed(0) + ',' + ry.toFixed(0) + ')  hdg=' + (heading * 180 / Math.PI | 0) + '°  prog=' + (progress / TLEN * 100 | 0) + '%', 6, 14);
+        }
+
+        function drawPlot(c, buf, color, yMin, yMax) {
+          const PW = c.canvas.width, PH = c.canvas.height;
+          c.clearRect(0, 0, PW, PH);
+          c.fillStyle = '#080808'; c.fillRect(0, 0, PW, PH);
+          const norm = v => PH - ((v - yMin) / (yMax - yMin)) * PH;
+          if (yMin < 0 && yMax > 0) {
+            c.strokeStyle = 'rgba(255,255,255,0.07)'; c.lineWidth = 1;
+            c.beginPath(); c.moveTo(0, norm(0)); c.lineTo(PW, norm(0)); c.stroke();
+          }
+          c.strokeStyle = color; c.lineWidth = 1.5;
+          c.beginPath();
+          for (let i = 0; i < BUF; i++) {
+            const bi = (bufIdx + i) % BUF;
+            const px = i / (BUF - 1) * PW, py = norm(buf[bi]);
+            i === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+          }
+          c.stroke();
+        }
+
+        updStatus('FOLLOWING LINE', '#4fa3f7');
+
+
+        let _lfNarrLast = '', _lfNarrCandidate = '', _lfNarrFrames = 0;
+        const LF_NARR_HOLD = 90;  /* ~1.5 s at 60 fps before message switches */
+        function updateLfNarration() {
+          const el = document.getElementById('lf-narration');
+          if (!el) return;
+          let msg, col;
+          if (finished) {
+            msg = 'Course complete! The robot traced the full P-shape: straight up the stem, around the right-side bowl, and back down to start. Try raising speed or lowering Kd to see overshoot on the curve.';
+            col = '#28ca42';
+          } else if (progress < SEG1_END * 0.6) {
+            msg = 'On the straight stem heading up — five IR sensors detect the white line underneath. The line is straight here so corrections are tiny and the error plot stays near zero.';
+            col = '#4fa3f7';
+          } else if (progress < SEG1_END) {
+            msg = 'Approaching the top of the stem — the P-shape is about to curve right into the bowl. The Kd (derivative) term will anticipate the rising error and steer before the robot drifts off the line.';
+            col = '#4fa3f7';
+          } else if (progress < SEG1_END + (SEG2_END - SEG1_END) * 0.35) {
+            msg = 'Entering the bowl — the line bends sharply right. The error spikes on the plot as the robot needs to steer hard. High Kd damps the overshoot; too low and the robot oscillates across the line.';
+            col = '#ffbd2e';
+          } else if (progress < SEG2_END) {
+            msg = 'Rounding the bowl — the PD controller adjusts left and right wheel speeds every frame to stay centred. The derivative term predicts where the error is heading, not just where it is now, so it steers ahead of the curve.';
+            col = '#4fa3f7';
+          } else {
+            msg = 'Back on the straight return stem heading down — the curve is done and the error drops back toward zero. The robot retraces the stem back to the start/finish marker.';
+            col = '#4fa3f7';
+          }
+          /* bowl entry, bowl rounding, and finish respond quickly; stem messages wait for stability */
+          const fastLane = finished || progress >= SEG1_END * 0.9;
+          const hold = fastLane ? 3 : LF_NARR_HOLD;
+          if (msg === _lfNarrCandidate) {
+            _lfNarrFrames++;
+          } else {
+            _lfNarrCandidate = msg; _lfNarrFrames = 0;
+          }
+          if (msg !== _lfNarrLast && _lfNarrFrames >= hold) {
+            _lfNarrLast = msg;
+            el.textContent = msg;
+            el.style.borderLeftColor = col;
+          }
+        }
+        function loop() {
+          physicsStep();
+          drawCourse();
+          updateLfNarration();
+          drawPlot(eCtx, errBuf, '#ff9f40', -3, 3);
+          drawPlot(sCtx, lBuf, '#28ca42', -0.5, 2);
+          /* overlay right wheel in blue */
+          sCtx.strokeStyle = '#4fa3f7'; sCtx.lineWidth = 1.5;
+          const PW = sPl.width, PH2 = sPl.height;
+          const normS = v => PH2 - ((v + 0.5) / 2.5) * PH2;
+          sCtx.beginPath();
+          for (let i = 0; i < BUF; i++) {
+            const bi = (bufIdx + i) % BUF, px = i / (BUF - 1) * PW, py = normS(rBuf[bi]);
+            i === 0 ? sCtx.moveTo(px, py) : sCtx.lineTo(px, py);
+          }
+          sCtx.stroke();
+          activeAnim = requestAnimationFrame(loop);
+        }
+        loop();
+      } /* end initPShape */
+
+    } /* end startMyRIO */
+  })(); /* end modal IIFE */
+
+  /* ── ROLE ROTATOR ───────────────────────────────────────── */
+  (function () {
+    const el = document.getElementById('rotator-text');
+    if (!el) return;
+    const labels = [
+      'Data & Automation Engineer · Pipelines · SPC · Multi-LLM Dev · Penang, MY',
+      'SPC Platform Builder · Control Charts · Cpk Monitoring · Live Dashboards',
+      'Agentic Developer · Claude Code · MCP Tools · Multi-LLM Integration',
+      'Manufacturing Process Engineer · 6 Yrs · Semiconductor Industry',
+    ];
+    let idx = 0;
+    function rotate() {
+      el.classList.add('fading');
+      setTimeout(() => {
+        idx = (idx + 1) % labels.length;
+        el.textContent = labels[idx];
+        el.classList.remove('fading');
+      }, 420);
+    }
+    setInterval(rotate, 3800);
+  })();
+
+  /* ── HERO SPC CHART ─────────────────────────────────────── */
+  (function () {
+    const canvas = document.getElementById('hero-chart');
+    if (!canvas) return;
+    const cpkLabel = document.getElementById('hero-chart-cpk');
+
+    let spcData = null;
+    let animFrame = 0, animId = null;
+
+    async function loadData() {
+      try {
+        const res = await fetch('https://spc.amohdnaw.xyz/api/demo');
+        if (!res.ok) return;
+        const d = await res.json();
+        spcData = d;
+        if (cpkLabel) cpkLabel.textContent = 'Cpk ' + d.cpk.toFixed(2);
+        startAnim();
+      } catch (e) { /* silent fail */ }
+    }
+
+    function drawChart() {
+      if (!spcData) return;
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.offsetWidth, h = canvas.offsetHeight;
+      if (!w || !h) return;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const pts = spcData.subgroups;
+      const ucl = spcData.ucl, lcl = spcData.lcl, cl = spcData.cl;
+      const min = lcl - (ucl - lcl) * 0.3;
+      const max = ucl + (ucl - lcl) * 0.3;
+      const pad = { l: 2, r: 2, t: 8, b: 8 };
+
+      function yScale(v) {
+        return pad.t + (1 - (v - min) / (max - min)) * (h - pad.t - pad.b);
+      }
+      function xScale(i, total) {
+        return pad.l + (i / (total - 1)) * (w - pad.l - pad.r);
+      }
+
+      const alpha = (document.documentElement.getAttribute('data-theme') === 'LIGHT') ? 0.18 : 0.12;
+
+      // UCL/LCL/CL lines
+      [{ v: ucl, color: 'rgba(239,68,68,' + alpha * 4 + ')' },
+       { v: lcl, color: 'rgba(239,68,68,' + alpha * 4 + ')' },
+       { v: cl,  color: 'rgba(100,180,255,' + alpha * 5 + ')' }].forEach(({ v, color }) => {
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, yScale(v));
+        ctx.lineTo(w - pad.r, yScale(v));
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      // Animate: draw up to animFrame points
+      const visible = Math.min(animFrame, pts.length);
+      if (visible < 2) return;
+
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(100,180,255,0.55)';
+      ctx.lineWidth = 1.5;
+      ctx.lineJoin = 'round';
+      for (let i = 0; i < visible; i++) {
+        const x = xScale(i, pts.length), y = yScale(pts[i].xbar);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // OOC points in red
+      for (let i = 0; i < visible; i++) {
+        const v = pts[i].xbar;
+        if (v > ucl || v < lcl) {
+          const x = xScale(i, pts.length), y = yScale(v);
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(239,68,68,0.85)';
+          ctx.fill();
+        }
+      }
+    }
+
+    function tick() {
+      animFrame++;
+      drawChart();
+      if (animFrame < spcData.subgroups.length) {
+        animId = requestAnimationFrame(tick);
+      } else {
+        // Pause then replay
+        setTimeout(() => { animFrame = 0; startAnim(); }, 2400);
+      }
+    }
+
+    function startAnim() {
+      if (animId) cancelAnimationFrame(animId);
+      animFrame = 0;
+      const interval = setInterval(() => {
+        animFrame++;
+        drawChart();
+        if (animFrame >= spcData.subgroups.length) {
+          clearInterval(interval);
+          setTimeout(() => { animFrame = 0; startAnim(); }, 2400);
+        }
+      }, 38);
+    }
+
+    // Redraw on resize
+    window.addEventListener('resize', () => { if (spcData) drawChart(); });
+
+    loadData();
+  })();
+
+  /* ── FLOATING TERMINAL BUTTON ───────────────────────────── */
+  (function () {
+    const btn = document.getElementById('float-term-btn');
+    const termSection = document.getElementById('terminal');
+    const termInput = document.getElementById('iterm-input');
+    if (!btn || !termSection) return;
+
+    // Show after scrolling past hero
+    const hero = document.getElementById('hero');
+    const obs = new IntersectionObserver(entries => {
+      btn.classList.toggle('visible', !entries[0].isIntersecting);
+    }, { threshold: 0.1 });
+    obs.observe(hero);
+
+    btn.addEventListener('click', () => {
+      termSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => { if (termInput) termInput.focus(); }, 500);
+    });
+  })();
+
+  /* ── CARD LIVE STATS ────────────────────────────────────── */
+  (function () {
+    const spcBack = document.getElementById('spc-live-back');
+    const msaBack = document.getElementById('msa-live-back');
+    if (!spcBack && !msaBack) return;
+
+    function cpkColor(cpk) {
+      if (cpk >= 1.67) return '#28ca42';
+      if (cpk >= 1.33) return '#4CAF50';
+      if (cpk >= 1.00) return '#f59e0b';
+      return '#d9804f';
+    }
+    function cpkVerdict(cpk) {
+      if (cpk >= 2.00) return 'World Class';
+      if (cpk >= 1.67) return 'Excellent';
+      if (cpk >= 1.33) return 'Capable';
+      if (cpk >= 1.00) return 'Minimum';
+      if (cpk >= 0.67) return 'Marginal';
+      return 'Out of Spec';
+    }
+
+    if (spcBack) {
+      fetch('https://spc.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
+        const col = cpkColor(d.cpk);
+        const verdict = cpkVerdict(d.cpk);
+        spcBack.innerHTML = `
+          <div class="live-stat">
+            <span class="live-stat-val" style="color:${col}">${d.cpk.toFixed(2)}</span>
+            <span class="live-stat-label">Live Cpk</span>
+          </div>
+          <span class="live-stat-verdict" style="color:${col}">${verdict}</span>
+          <div class="live-stat-detail">
+            ${d.characteristic}<br>
+            UCL ${d.ucl.toFixed(3)} · CL ${d.cl.toFixed(3)} · LCL ${d.lcl.toFixed(3)}<br>
+            ${d.subgroups.length} subgroups · Ppk ${d.ppk.toFixed(2)}
+          </div>
+          <a href="https://spc.amohdnaw.xyz" target="_blank" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-disabled)">↗ open dashboard</a>
+        `;
+      }).catch(() => {
+        if (spcBack) spcBack.innerHTML = '<span class="live-back-loading">api offline</span>';
+      });
+    }
+
+    if (msaBack) {
+      fetch('https://msa.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
+        const ok = d.grr_pct <= 10;
+        const col = ok ? '#28ca42' : (d.grr_pct <= 30 ? '#f59e0b' : '#d9804f');
+        msaBack.innerHTML = `
+          <div class="live-stat-row">
+            <div class="live-stat">
+              <span class="live-stat-val" style="color:${col}">${d.grr_pct}%</span>
+              <span class="live-stat-label">GR&amp;R</span>
+            </div>
+            <div class="live-stat">
+              <span class="live-stat-val" style="color:#d9804f">${d.ndc}</span>
+              <span class="live-stat-label">NDC</span>
+            </div>
+          </div>
+          <span class="live-stat-verdict" style="color:${col}">${d.verdict}</span>
+          <div class="live-stat-detail">
+            ${d.gauge}<br>
+            ${d.study_type} · ${d.appraisers} appraisers · ${d.parts} parts<br>
+            P/T ratio ${d.pt_ratio.toFixed(3)} · EV ${d.ev_pct}% · AV ${d.av_pct}%
+          </div>
+          <a href="https://msa.amohdnaw.xyz" target="_blank" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-disabled)">↗ open dashboard</a>
+        `;
+      }).catch(() => {
+        if (msaBack) msaBack.innerHTML = '<span class="live-back-loading">api offline</span>';
+      });
+    }
+  })();
+
+  /* ── CPK 2048 ────────────────────────────────────────────── */
+  (function () {
+    const CPK = {
+      2:  { label: 'Cpk 0.33', sub: 'Out of Spec', color: '#d9804f' },
+      4:  { label: 'Cpk 0.67', sub: 'Marginal',    color: '#d9804f' },
+      8:  { label: 'Cpk 1.00', sub: 'Minimum',     color: '#FF9800' },
+      16: { label: 'Cpk 1.33', sub: 'Capable',     color: '#f59e0b' },
+      32: { label: 'Cpk 1.67', sub: 'Excellent',   color: '#4CAF50' },
+      64: { label: 'Cpk 2.00', sub: 'World Class', color: '#28ca42' },
+    };
+    const WIN = 64;
+
+    let board, score, won, gameOver;
+    const overlay  = document.getElementById('cpk2048-modal');
+    const closeBtn = document.getElementById('cpk2048-close');
+    const restBtn  = document.getElementById('cpk2048-restart');
+    const msgEl    = document.getElementById('cpk2048-msg');
+    const scoreEl  = document.getElementById('cpk-score');
+    const gridEl   = document.getElementById('cpk-grid');
+
+    function init() {
+      board = Array.from({length:4}, () => Array(4).fill(0));
+      score = 0; won = false; gameOver = false;
+      if (msgEl) msgEl.textContent = '';
+      addTile(); addTile(); render();
+    }
+
+    function addTile() {
+      const empty = [];
+      board.forEach((row, r) => row.forEach((v, c) => { if (!v) empty.push([r, c]); }));
+      if (!empty.length) return;
+      const idx = Math.floor(empty.length * 0.999 * Math.random());
+      const [r, c] = empty[idx];
+      board[r][c] = empty.length > 2 ? 2 : 4;
+    }
+
+    function render() {
+      if (!gridEl) return;
+      gridEl.innerHTML = '';
+      board.forEach(row => row.forEach(val => {
+        const cell = document.createElement('div');
+        cell.className = 'cpk-cell';
+        if (val) {
+          const info = CPK[val] || { label: String(val), sub: '···', color: '#aeb5c2' };
+          cell.style.background = info.color + '18';
+          cell.style.borderColor = info.color + '55';
+          const vEl = document.createElement('span');
+          vEl.className = 'cpk-val';
+          vEl.style.color = info.color;
+          vEl.textContent = info.label;
+          const sEl = document.createElement('span');
+          sEl.className = 'cpk-sub';
+          sEl.textContent = info.sub;
+          cell.appendChild(vEl);
+          cell.appendChild(sEl);
+        }
+        gridEl.appendChild(cell);
+      }));
+      if (scoreEl) scoreEl.textContent = score;
+    }
+
+    function slideLeft(row) {
+      const r = row.filter(v => v);
+      for (let i = 0; i < r.length - 1; i++) {
+        if (r[i] === r[i + 1]) {
+          r[i] *= 2;
+          score += r[i];
+          if (r[i] >= WIN) won = true;
+          r.splice(i + 1, 1);
+        }
+      }
+      while (r.length < 4) r.push(0);
+      return r;
+    }
+
+    function transpose(b) { return b[0].map((_, c) => b.map(row => row[c])); }
+
+    function move(dir) {
+      if (gameOver || won) return;
+      let b = board.map(r => [...r]);
+      if (dir === 'left')  b = b.map(row => slideLeft(row));
+      if (dir === 'right') b = b.map(row => slideLeft([...row].reverse()).reverse());
+      if (dir === 'up')    b = transpose(transpose(b).map(col => slideLeft(col)));
+      if (dir === 'down')  b = transpose(transpose(b).map(col => slideLeft([...col].reverse()).reverse()));
+      if (JSON.stringify(b) === JSON.stringify(board)) return;
+      board = b;
+      addTile();
+      render();
+      if (won) {
+        if (msgEl) msgEl.textContent = '✓ Cpk 2.00 achieved — World Class process!';
+      } else if (isOver()) {
+        gameOver = true;
+        if (msgEl) msgEl.textContent = 'No moves left. Press restart.';
+      }
+    }
+
+    function isOver() {
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+        if (!board[r][c]) return false;
+        if (c < 3 && board[r][c] === board[r][c+1]) return false;
+        if (r < 3 && board[r][c] === board[r+1][c]) return false;
+      }
+      return true;
+    }
+
+    function open2048() { overlay.classList.add('open'); if (!board) init(); }
+    function close2048() { overlay.classList.remove('open'); }
+
+    if (closeBtn) closeBtn.addEventListener('click', close2048);
+    if (restBtn)  restBtn.addEventListener('click', init);
+    overlay.addEventListener('click', e => { if (e.target === overlay) close2048(); });
+
+    document.addEventListener('keydown', e => {
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape') { close2048(); return; }
+      const map = { ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down' };
+      if (map[e.key]) { e.preventDefault(); move(map[e.key]); }
+    });
+
+    let sx, sy;
+    if (gridEl) {
+      gridEl.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+      gridEl.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) move(dx > 0 ? 'right' : 'left');
+        else if (Math.abs(dy) > 20) move(dy > 0 ? 'down' : 'up');
+      }, { passive: true });
+    }
+
+    window.open2048 = open2048;
+    init();
+  })();
+
+</script>
+<script>
+fetch('https://spc.amohdnaw.xyz/api/demo').then(r => r.json()).then(d => {
+  document.getElementById('hero-pulse-cpk').textContent = d.cpk.toFixed(2);
+  document.getElementById('hero-pulse').hidden = false;
+}).catch(() => {});
+</script>
+</body>
+</html>
