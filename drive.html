@@ -41,7 +41,24 @@
   #joy{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);width:110px;height:110px;border:1px solid rgba(223,227,236,.25);
     border-radius:50%;z-index:15;display:none;touch-action:none}
   #joy .nub{position:absolute;left:50%;top:50%;width:44px;height:44px;border-radius:50%;background:rgba(217,128,79,.5);transform:translate(-50%,-50%)}
-  @media (pointer:coarse){#joy{display:block}#controls{display:none}}
+  @media (pointer:coarse), (max-width:640px){
+    #joy{display:block;left:20px;bottom:22px;transform:none;width:132px;height:132px}
+    #controls{display:none}
+    #title span{display:none}
+    #title b{font-size:12px}
+    #skip{padding:8px 10px!important;font-size:9.5px!important;top:12px!important;right:12px!important}
+    #game{top:44px!important;width:94vw}
+    #game div{white-space:normal;font-size:9.5px!important}
+    #game div:first-child{font-size:12px!important}
+    #found{top:128px!important;left:16px!important;bottom:auto!important;font-size:10px!important}
+    #toast{top:140px!important;width:90vw}
+    #card{top:160px!important;bottom:auto!important;max-width:92vw}
+    #startchip{left:auto!important;right:14px!important;bottom:22px!important;transform:none!important;padding:12px 13px!important;font-size:10px!important}
+    #speed{bottom:78px!important;right:14px!important}
+    #speed b{font-size:16px!important}
+    #batt{bottom:118px!important;right:14px!important}
+    #surf{display:none}
+  }
 </style>
 </head>
 <body>
@@ -390,9 +407,11 @@ function tick(){
   chassisG.rotation.x = THREE.MathUtils.lerp(chassisG.rotation.x,  w*v*.004,  .15);  // lean in turns
   led.material.emissiveIntensity = 1 + Math.sin(performance.now()/250)*.6;
 
-  /* chase cam */
-  const cx=X - Math.cos(heading)*13, cz=Z + Math.sin(heading)*13;
-  cam.position.lerp(new THREE.Vector3(cx, 9.5, cz), 1-Math.pow(.001,dt));
+  /* chase cam — portrait gets a higher, wider view */
+  const portrait = innerHeight > innerWidth;
+  const CD = portrait?18:13, CH = portrait?14:9.5;
+  const cx=X - Math.cos(heading)*CD, cz=Z + Math.sin(heading)*CD;
+  cam.position.lerp(new THREE.Vector3(cx, CH, cz), 1-Math.pow(.001,dt));
   cam.lookAt(X, 1.2, Z);
 
   /* stations proximity */
@@ -445,7 +464,8 @@ function tick(){
   requestAnimationFrame(tick);
 }
 tick();
-addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);});
+function fitCam(){ cam.aspect=innerWidth/innerHeight; cam.fov = innerHeight>innerWidth ? 66 : 55; cam.updateProjectionMatrix(); ren.setSize(innerWidth,innerHeight); }
+addEventListener('resize',fitCam); fitCam();
 </script>
 </body>
 </html>
