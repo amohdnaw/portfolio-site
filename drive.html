@@ -47,9 +47,9 @@
     #title span{display:none}
     #title b{font-size:12px}
     #skip{padding:8px 10px!important;font-size:9.5px!important;top:12px!important;right:12px!important}
-    #game{top:44px!important;width:94vw}
-    #game div{white-space:normal;font-size:9.5px!important}
-    #game div:first-child{font-size:12px!important}
+    #game{top:44px!important;width:86vw;min-width:0!important}
+    #game .g-goal{display:none}
+    #game div{white-space:normal}
     #found{top:128px!important;left:16px!important;bottom:auto!important;font-size:10px!important}
     #toast{top:140px!important;width:90vw}
     #card{top:160px!important;bottom:auto!important;max-width:92vw}
@@ -71,10 +71,16 @@
 <div class="hud" id="surf" style="bottom:70px;right:22px;font-size:10px;color:var(--dim);letter-spacing:.08em;text-align:right">surface: LAB FLOOR</div>
 <div class="hud" id="speed"><b id="spd">0.0</b>ft/s · sheepdog myRIO-1900</div>
 <div id="card"><h3 id="card-t"></h3><p id="card-p"></p></div>
-<div class="hud" id="game" style="top:18px;left:50%;transform:translateX(-50%);text-align:center;display:none">
-  <div style="font:700 13px/1 var(--mono);letter-spacing:.1em">SHIFT — Cpk <span id="g-cpk" style="color:var(--acc)">—</span></div>
-  <div style="font:10px/1.8 var(--mono);color:var(--dim)">μ <span id="g-mu">—</span> · σ <span id="g-sig">—</span> · <span id="g-time">0:00</span> · goal: herd the glowing points inside the limits</div>
-  <div style="font:10px/1.6 var(--mono);color:var(--dim)">bronze 1.33 · silver 1.67 · gold 2.00 · best: <span id="g-best">—</span></div>
+<div class="hud" id="game" style="top:18px;left:50%;transform:translateX(-50%);text-align:center;display:none;min-width:280px">
+  <div style="font:700 15px/1.2 var(--mono);letter-spacing:.08em">Cpk <span id="g-cpk" style="color:var(--acc)">—</span>
+    <span id="g-hold" style="font-size:10px;color:var(--ok)"></span></div>
+  <div id="g-bar" style="position:relative;height:7px;background:rgba(223,227,236,.15);margin:6px 0 4px">
+    <i id="g-fill" style="position:absolute;left:0;top:0;bottom:0;width:0;background:var(--acc)"></i>
+    <i style="position:absolute;left:60.4%;top:-2px;bottom:-2px;width:2px;background:#b87333"></i>
+    <i style="position:absolute;left:75.9%;top:-2px;bottom:-2px;width:2px;background:#a8adb8"></i>
+    <i style="position:absolute;left:90.9%;top:-2px;bottom:-2px;width:2px;background:#e8c23a"></i>
+  </div>
+  <div style="font:10px/1.7 var(--mono);color:var(--dim)">μ <span id="g-mu">—</span> · σ <span id="g-sig">—</span> · <span id="g-time">0:00</span> · best <span id="g-best">—</span><span class="g-goal"> · herd the glowing points inside the limits</span></div>
 </div>
 <div class="hud" id="startchip" style="bottom:70px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--mono);letter-spacing:.1em;border:1px solid var(--acc);color:var(--acc);padding:10px 16px;cursor:pointer;background:rgba(18,21,28,.6)">G — START A SHIFT</div>
 <div class="hud" id="toast" style="top:70px;left:50%;transform:translateX(-50%);font:700 13px/1.6 var(--mono);color:var(--ok);opacity:0;transition:opacity .4s;text-align:center"></div>
@@ -447,9 +453,12 @@ function tick(){
     document.getElementById('g-mu').textContent = mu.toFixed(1);
     document.getElementById('g-sig').textContent = sd.toFixed(1);
     document.getElementById('g-time').textContent = fmtT(shiftT);
+    document.getElementById('g-fill').style.width = Math.min(cpk/2.2*100,100).toFixed(1)+'%';
     let lvl=0, name='';
     for(const [thr,nm] of LVLS){ if(cpk>=thr){ lvl=thr; name=nm; break; } }
     if(lvl===sustain.lvl) sustain.t += dt; else sustain = {lvl, t:0};
+    const hold=document.getElementById('g-hold');
+    hold.textContent = (lvl>0 && lvl>bestSustain) ? ('banking '+name+' '+Math.min(sustain.t,3).toFixed(1)+'/3s') : '';
     if(lvl>0 && sustain.t>3 && lvl>bestSustain){
       bestSustain=lvl; chime();
       toast(name+' — process capable at Cpk '+lvl.toFixed(2)+' · '+fmtT(shiftT), lvl>=2?'#e8c23a':'#7fa477');
