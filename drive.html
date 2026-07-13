@@ -378,7 +378,11 @@ function evalWeco(zs){ // zs ordered by x
     if(up||dn) v.push({r:5,i:Array.from({length:6},(_,k)=>i+k)}); }
   for(let i=0;i+7<zs.length;i++){ const w=zs.slice(i,i+8);
     if(w.every(z=>Math.abs(z)>SIG)) v.push({r:7,i:Array.from({length:8},(_,k)=>i+k)}); }
-  const seen=new Set(); return v.filter(x=>{const k=x.r; if(seen.has(k))return false; seen.add(k); return true;});
+  const seen=new Set(); let out=v.filter(x=>{const k=x.r; if(seen.has(k))return false; seen.add(k); return true;});
+  // cascade suppression: drop R2/R3 whose hits are all already R1 points (echoes, like the app's cascade rule)
+  const r1=new Set((out.find(x=>x.r===1)||{i:[]}).i);
+  out=out.filter(x=>!( (x.r===2||x.r===3) && x.i.every(i=>r1.has(i)) ));
+  return out;
 }
 const rings=[];
 for(let i=0;i<12;i++){ const r=new THREE.Mesh(new THREE.TorusGeometry(1.6,.09,8,40),
@@ -504,14 +508,23 @@ function tick(){
       let ri=0;
       for(const vio of wecoV) for(const idx of vio.i){ if(ri<rings.length){
         const p=ordered[idx]; rings[ri].position.x=p.m.position.x; rings[ri].position.z=p.m.position.z;
-        rings[ri].material.color.set(vio.r===1?0xef4444:(vio.r<=3?0xf59e0b:0x8fa3c8)); ri++; } }
-      const rulesNow = wecoV.map(v=>'R'+v.r).join(', ');
+        rings[ri].material.color.set(vio.r===1?0xef4444:(vio.r<=4?0xf59e0b:0x5c6a80)); ri++; } }
+      const GATES=new Set([1,2,3,4]);
+      const gating=wecoV.filter(v=>GATES.has(v.r)), warns=wecoV.filter(v=>!GATES.has(v.r));
       const gw=document.getElementById('g-weco');
-      if(wecoV.length){ gw.textContent='OUT OF CONTROL — '+wecoV.map(v=>WECO_TXT[v.r]).join(' · ');
-        gw.style.color='#f59e0b'; }
-      else { gw.textContent='in control ✓'; gw.style.color='#7fa477'; }
-      if(rulesNow && rulesNow!==lastRules){ buzz(); toast('WECO '+rulesNow+' fired — clear it to bank a medal','#f59e0b'); }
+      if(gating.length){
+        const shown=gating.slice(0,2).map(v=>'R'+v.r).join(' · ');
+        gw.textContent='OUT OF CONTROL — '+shown+(gating.length>2?' +'+(gating.length-2):'')+(warns.length?'  (warn: '+warns.map(v=>'R'+v.r).join(' ')+')':'');
+        gw.style.color='#f59e0b';
+      } else if(warns.length){
+        gw.textContent='in control ✓ — pattern warning: '+warns.map(v=>'R'+v.r).join(' · ');
+        gw.style.color='#8fa3c8';
+      } else { gw.textContent='in control ✓'; gw.style.color='#7fa477'; }
+      const rulesNow = gating.map(v=>'R'+v.r).join(',');
+      if(rulesNow && rulesNow!==lastRules){ buzz();
+        toast('WECO '+WECO_TXT[gating[0].r]+(gating.length>1?' (+'+(gating.length-1)+' more)':''),'#f59e0b'); }
       lastRules = rulesNow;
+      window.__gating = gating;
     }
     const t2=performance.now()/300;
     rings.forEach(r=>{ if(r.material.opacity!==0||true){ const sc=1+Math.sin(t2)*.18;
@@ -520,11 +533,11 @@ function tick(){
 
     let lvl=0, name='';
     for(const [thr,nm] of LVLS){ if(cpk>=thr){ lvl=thr; name=nm; break; } }
-    if(wecoV.length) lvl=0;                                  // capable ≠ in control
+    const gv=(window.__gating||[]); if(gv.length) lvl=0;      // classic WECO 1-4 gate the medal
     if(lvl===sustain.lvl) sustain.t += dt; else sustain = {lvl, t:0};
     const hold=document.getElementById('g-hold');
     hold.textContent = (lvl>0 && lvl>bestSustain) ? ('banking '+name+' '+Math.min(sustain.t,3).toFixed(1)+'/3s')
-      : (wecoV.length && cpk>=1.33 ? 'capable but NOT in control' : '');
+      : (gv.length && cpk>=1.33 ? 'capable but NOT in control ('+ 'R'+gv[0].r +')' : '');
     if(lvl>0 && sustain.t>3 && lvl>bestSustain){
       bestSustain=lvl; chime();
       toast(name+' — process capable at Cpk '+lvl.toFixed(2)+' · '+fmtT(shiftT), lvl>=2?'#e8c23a':'#7fa477');
