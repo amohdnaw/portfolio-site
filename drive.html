@@ -54,6 +54,13 @@
 <div class="hud" id="surf" style="bottom:70px;right:22px;font-size:10px;color:var(--dim);letter-spacing:.08em;text-align:right">surface: LAB FLOOR</div>
 <div class="hud" id="speed"><b id="spd">0.0</b>ft/s · sheepdog myRIO-1900</div>
 <div id="card"><h3 id="card-t"></h3><p id="card-p"></p></div>
+<div class="hud" id="game" style="top:18px;left:50%;transform:translateX(-50%);text-align:center;display:none">
+  <div style="font:700 13px/1 var(--mono);letter-spacing:.1em">SHIFT — Cpk <span id="g-cpk" style="color:var(--acc)">—</span></div>
+  <div style="font:10px/1.8 var(--mono);color:var(--dim)">μ <span id="g-mu">—</span> · σ <span id="g-sig">—</span> · <span id="g-time">0:00</span> · goal: herd the glowing points inside the limits</div>
+  <div style="font:10px/1.6 var(--mono);color:var(--dim)">bronze 1.33 · silver 1.67 · gold 2.00 · best: <span id="g-best">—</span></div>
+</div>
+<div class="hud" id="startchip" style="bottom:70px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--mono);letter-spacing:.1em;border:1px solid var(--acc);color:var(--acc);padding:10px 16px;cursor:pointer;background:rgba(18,21,28,.6)">G — START A SHIFT</div>
+<div class="hud" id="toast" style="top:70px;left:50%;transform:translateX(-50%);font:700 13px/1.6 var(--mono);color:var(--ok);opacity:0;transition:opacity .4s;text-align:center"></div>
 <div id="joy"><div class="nub" id="nub"></div></div>
 
 <script type="module">
@@ -258,6 +265,7 @@ const keys={};
 addEventListener('keydown',e=>{const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='u'){untuned=!untuned; document.getElementById('spd').nextSibling.textContent = untuned?' ft/s · UNTUNED (pulls left!)':' ft/s · sheepdog myRIO-1900';}
   if(k==='m'){ initAudio(); sndOn=!sndOn; if(audio&&audio.ctx.state==='suspended')audio.ctx.resume(); }
+  if(k==='g'){ shift?endShift():startShift(); }
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 
@@ -284,6 +292,40 @@ function h(e){ e.preventDefault(); const r=joy.getBoundingClientRect(), t=e.touc
 
 const card=document.getElementById('card'), cardT=document.getElementById('card-t'), cardP=document.getElementById('card-p');
 let activeStation=null;
+
+/* ── PHASE B: the Floor — herd points, score = real Cpk ── */
+const USL=22, LSL=-22, GOAL_N=12;
+let shift=false, shiftT=0, bestSustain=0, sustain={lvl:0,t:0}, gamePts=[];
+const LVLS=[[2.00,'GOLD'],[1.67,'SILVER'],[1.33,'BRONZE']];
+for(const p of pts) p.home={x:p.m.position.x, z:p.m.position.z};
+function fmtT(t){ return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0'); }
+function loadBest(){ try{ const b=JSON.parse(localStorage.getItem('sheepdog_best')); if(b) document.getElementById('g-best').textContent=b.medal+' in '+b.time; }catch(e){} }
+loadBest();
+function startShift(){
+  shift=true; shiftT=0; bestSustain=0; sustain={lvl:0,t:0};
+  gamePts = pts.filter(p=>Math.abs(p.home.x - X) < 90).slice(0,GOAL_N);
+  gamePts.forEach((p,i)=>{ const side = i%2?1:-1;
+    p.m.position.x = X - 45 + i*8 + (Math.random()*4-2);
+    p.m.position.z = side*(15+Math.random()*6);            // start OUTSIDE the limits
+    p.vx=0; p.vz=0; });
+  document.getElementById('game').style.display='block';
+  document.getElementById('startchip').textContent='G — END SHIFT';
+  toast('SHIFT STARTED — bring the process into control');
+}
+function endShift(){
+  shift=false;
+  document.getElementById('game').style.display='none';
+  document.getElementById('startchip').textContent='G — START A SHIFT';
+}
+function toast(msg,color){ const t=document.getElementById('toast');
+  t.textContent=msg; t.style.color=color||'#7fa477'; t.style.opacity=1;
+  clearTimeout(t._h); t._h=setTimeout(()=>t.style.opacity=0, 2600); }
+function cpkOf(zs){
+  const n=zs.length, mu=zs.reduce((a,b)=>a+b,0)/n;
+  const sd=Math.sqrt(zs.reduce((a,b)=>a+(b-mu)*(b-mu),0)/(n-1)) || 1e-6;
+  return {cpk:Math.min(USL-mu, mu-LSL)/(3*sd), mu, sd};
+}
+document.getElementById('startchip').addEventListener('click',()=>{ shift?endShift():startShift(); });
 
 const clock=new THREE.Clock();
 function tick(){
@@ -369,6 +411,35 @@ function tick(){
   if(audio&&sndOn){ audio.osc.frequency.value = 38 + Math.abs(v)*9 + Math.abs(w)*14;
     audio.gain.gain.value = Math.min(.08, .015 + Math.abs(v)*.006); }
   else if(audio){ audio.gain.gain.value=0; }
+  /* OOC glow — any point beyond the control limits burns apricot (both modes) */
+  for(const p of pts){
+    const out = Math.abs(p.m.position.z) > 14;
+    if(out !== p._out){ p._out = out;
+      p.m.material.color.set(out?ACC:INK);
+      p.m.material.emissive.set(out?ACC:0x000000);
+      p.m.material.emissiveIntensity = out?.55:0; } }
+
+  if(shift){
+    shiftT += dt;
+    const {cpk, mu, sd} = cpkOf(gamePts.map(p=>p.m.position.z));
+    const cpkD = Math.min(cpk, 9.99);
+    document.getElementById('g-cpk').textContent = cpkD.toFixed(2);
+    document.getElementById('g-cpk').style.color = cpk>=1.33 ? '#7fa477' : '#d9804f';
+    document.getElementById('g-mu').textContent = mu.toFixed(1);
+    document.getElementById('g-sig').textContent = sd.toFixed(1);
+    document.getElementById('g-time').textContent = fmtT(shiftT);
+    let lvl=0, name='';
+    for(const [thr,nm] of LVLS){ if(cpk>=thr){ lvl=thr; name=nm; break; } }
+    if(lvl===sustain.lvl) sustain.t += dt; else sustain = {lvl, t:0};
+    if(lvl>0 && sustain.t>3 && lvl>bestSustain){
+      bestSustain=lvl; chime();
+      toast(name+' — process capable at Cpk '+lvl.toFixed(2)+' · '+fmtT(shiftT), lvl>=2?'#e8c23a':'#7fa477');
+      try{ const prev=JSON.parse(localStorage.getItem('sheepdog_best')||'null');
+        if(!prev || lvl>parseFloat(prev.lvl||0) || (lvl===parseFloat(prev.lvl||0) && shiftT<prev.secs)){
+          localStorage.setItem('sheepdog_best', JSON.stringify({lvl, medal:name, time:fmtT(shiftT), secs:shiftT}));
+          loadBest(); } }catch(e){}
+    }
+  }
   document.getElementById('spd').textContent=Math.abs(v).toFixed(1);
   ren.render(scene,cam);
   requestAnimationFrame(tick);
