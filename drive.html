@@ -49,6 +49,9 @@
 <a class="hud" id="skip" href="/">skip — just show me the work</a>
 <div class="hud" id="controls"><b>W A S D</b> or arrows to drive · <b>M</b> sound · <b>U</b> untuned mode</div>
 <div class="hud" id="found" style="bottom:44px;left:22px;font-size:11px;color:var(--acc);letter-spacing:.08em">stations found 0/7</div>
+<div class="hud" id="batt" style="bottom:92px;right:22px;font-size:10px;color:var(--dim);text-align:right;letter-spacing:.06em">
+  12V BATTERY <span id="batt-bar" style="display:inline-block;width:70px;height:7px;border:1px solid var(--dim);vertical-align:middle;margin-left:6px"><i id="batt-fill" style="display:block;height:100%;width:100%;background:var(--ok)"></i></span></div>
+<div class="hud" id="surf" style="bottom:70px;right:22px;font-size:10px;color:var(--dim);letter-spacing:.08em;text-align:right">surface: LAB FLOOR</div>
 <div class="hud" id="speed"><b id="spd">0.0</b>ft/s · sheepdog myRIO-1900</div>
 <div id="card"><h3 id="card-t"></h3><p id="card-p"></p></div>
 <div id="joy"><div class="nub" id="nub"></div></div>
@@ -91,13 +94,27 @@ stripe(14, ACC, .3, true);  // LCL
 stripe(-22, DIM, .22, true); // USL
 stripe(22, DIM, .22, true);  // LSL
 
-/* data points along the chart — the "process" */
+/* data points along the chart — now PUSHABLE (phase A) */
 const pts=[]; let px=-160;
 while(px<200){ const z=(Math.sin(px*.13)+Math.sin(px*.31)*.5)*6;
   const ooc = (px>34&&px<40);
-  const p=new THREE.Mesh(new THREE.SphereGeometry(ooc?1.5:.9,16,16),
+  const r = ooc?1.5:.9;
+  const p=new THREE.Mesh(new THREE.SphereGeometry(r,16,16),
     new THREE.MeshStandardMaterial({color:ooc?ACC:INK,roughness:.4,emissive:ooc?ACC:0x000000,emissiveIntensity:ooc?.5:0}));
-  p.position.set(px, ooc?1.5:.9, ooc?-17:z); p.castShadow=true; scene.add(p); pts.push(p); px+=8; }
+  p.position.set(px, r, ooc?-17:z); p.castShadow=true; scene.add(p);
+  pts.push({m:p, r, vx:0, vz:0, mass:ooc?2.2:1}); px+=8; }
+
+/* ── surface zones — the report's "the track was rougher, gains had to be retuned" story ── */
+const ROUGH_ZONES=[{x1:50,x2:95,z1:-26,z2:0},{x1:-100,x2:-65,z1:-4,z2:24}];
+for(const rz of ROUGH_ZONES){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(rz.x2-rz.x1,rz.z2-rz.z1),
+    new THREE.MeshStandardMaterial({color:0x1c2028,roughness:1}));
+  m.rotation.x=-Math.PI/2; m.position.set((rz.x1+rz.x2)/2,.015,(rz.z1+rz.z2)/2); m.receiveShadow=true; scene.add(m);
+  for(let i=0;i<60;i++){ const sp=new THREE.Mesh(new THREE.CircleGeometry(.09+Math.random()*.12,6),
+      new THREE.MeshBasicMaterial({color:0x2b303c}));
+    sp.rotation.x=-Math.PI/2; sp.position.set(rz.x1+Math.random()*(rz.x2-rz.x1),.025,rz.z1+Math.random()*(rz.z2-rz.z1)); scene.add(sp); }
+}
+function onRough(x,z){ return ROUGH_ZONES.some(r=>x>r.x1&&x<r.x2&&z>r.z1&&z<r.z2); }
 
 /* ── the Sheepdog — modeled on the real ME375 robot (FinalProject fig. 2) ── */
 const bot = new THREE.Group();
@@ -233,6 +250,9 @@ const GAME_SCALE=6;                   // real ref was 1.5 ft/s — overclocked f
 let vL=0, vR=0, iL=0, iR=0, heading=0, X=-20, Z=6, prevV=0;
 let untuned=false;                    // easter egg: pre-tuning left-pull (report §Discussion)
 let yPos=0, yVel=0, prevZone=0;       // hop state (crossing the control limits at speed)
+let omega=0;                          // yaw rate with inertia
+let charge=1, uMaxEff=UMAX;           // 12V battery sag
+let prevSign=0;                       // caster scrub detector
 const TRACK=2.9, VREF=1.5*GAME_SCALE;
 const keys={};
 addEventListener('keydown',e=>{const k=e.key.toLowerCase(); keys[k]=true;
@@ -242,9 +262,12 @@ addEventListener('keydown',e=>{const k=e.key.toLowerCase(); keys[k]=true;
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 
 function wheelStep(v,integ,ref,Kp,Ki,K,tau,dt){
-  const err = ref - v;
+  // 190-count encoder: period-based velocity estimate jitters at crawl speeds
+  const q = Math.max(0, .22 - Math.abs(v)*.02);
+  const vMeas = v + (Math.random()-.5)*q;
+  const err = ref - vMeas;
   let u = Kp*err + Ki*(integ + err*dt);
-  if (u > UMAX || u < -UMAX){ u = Math.max(-UMAX, Math.min(UMAX, u)); }  // clamp
+  if (u > uMaxEff || u < -uMaxEff){ u = Math.max(-uMaxEff, Math.min(uMaxEff, u)); }  // clamp (battery-limited)
   else { integ += err*dt; }                                              // anti-windup: integrate only unclamped
   const vNew = v + ((K*u) - v)/tau*dt;
   return [vNew, integ];
@@ -269,16 +292,55 @@ function tick(){
   const turn=(keys['a']||keys['arrowleft']?1:0)-(keys['d']||keys['arrowright']?1:0) - joyX;
   const refL = VREF*Math.max(-1,Math.min(1,fwd - .6*turn)) * (untuned?.62:1);
   const refR = VREF*Math.max(-1,Math.min(1,fwd + .6*turn));
-  [vL,iL] = wheelStep(vL,iL,refL, untuned?KpL*.4:KpL, untuned?KiL*.4:KiL, KL,tauL, dt);
-  [vR,iR] = wheelStep(vR,iR,refR, KpR,KiR, KR,tauR, dt);
-  const v=(vL+vR)/2, w=(vR-vL)/TRACK;
+  const rough = onRough(X,Z);
+  const kMul = rough?.8:1, tauMul = rough?1.6:1, drag = rough?.985:1;
+  [vL,iL] = wheelStep(vL,iL,refL, untuned?KpL*.4:KpL, untuned?KiL*.4:KiL, KL*kMul, tauL*tauMul, dt);
+  [vR,iR] = wheelStep(vR,iR,refR, KpR,KiR, KR*kMul, tauR*tauMul, dt);
+  vL*=drag; vR*=drag;
+  const v=(vL+vR)/2, wTarget=(vR-vL)/TRACK;
+  omega += (wTarget-omega)/.16*dt;                 // yaw inertia
+  const w=omega;
   heading += w*dt;
+  // caster scrub: fast direction reversal kicks the heading
+  const sg = Math.sign(v)*(Math.abs(v)>2?1:0);
+  if(sg!==0 && prevSign!==0 && sg!==prevSign){ heading += (Math.random()-.5)*.12; }
+  if(sg!==0) prevSign=sg;
+  // 12V lead-acid: sags under sustained near-max duty, recovers at rest
+  const load = (Math.abs(refL)+Math.abs(refR))/(2*VREF);
+  charge = Math.max(.25, Math.min(1, charge + (load>.85 ? -.045*dt : .03*dt*(1-load))));
+  uMaxEff = UMAX*(.55+.45*charge);
+  document.getElementById('batt-fill').style.width=(charge*100).toFixed(0)+'%';
+  document.getElementById('batt-fill').style.background = charge>.5?'#7fa477':(charge>.35?'#d9b34f':'#d9804f');
+  document.getElementById('surf').textContent='surface: '+(rough?'ROUGH TRACK — controller struggles':'LAB FLOOR');
   X += Math.cos(heading)*v*dt; Z -= Math.sin(heading)*v*dt;
   const zone = Math.abs(Z)>14?1:0;                       // beyond UCL/LCL
   if(zone!==prevZone && Math.abs(v)>9 && yPos===0){ yVel=5.2; chime(); }
   prevZone=zone;
   if(yPos>0||yVel>0){ yPos+=yVel*dt; yVel-=16*dt; if(yPos<=0){yPos=0;yVel=0;} }
   bot.position.set(X,yPos,Z); bot.rotation.y=heading;
+
+  /* pushable spheres: robot impulse + rolling friction + sphere-sphere */
+  for(const p of pts){
+    const dx=p.m.position.x-X, dz=p.m.position.z-Z, d=Math.hypot(dx,dz), minD=p.r+2.1;
+    if(d<minD && d>0.01 && yPos<.5){
+      const nx=dx/d, nz=dz/d;
+      const relv = (Math.cos(heading)*v)*nx + (-Math.sin(heading)*v)*nz;
+      const push = Math.max(relv,1.5)/p.mass;
+      p.vx += nx*push*1.15; p.vz += nz*push*1.15;
+      p.m.position.x = X+nx*minD; p.m.position.z = Z+nz*minD;   // separate
+    }
+    p.vx*=Math.pow(.4,dt*2); p.vz*=Math.pow(.4,dt*2);           // rolling friction
+    p.m.position.x += p.vx*dt; p.m.position.z += p.vz*dt;
+    p.m.rotation.z -= p.vx*dt/p.r; p.m.rotation.x += p.vz*dt/p.r;
+  }
+  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+    const a=pts[i], b=pts[j];
+    const dx=b.m.position.x-a.m.position.x, dz=b.m.position.z-a.m.position.z;
+    const d=Math.hypot(dx,dz), minD=a.r+b.r;
+    if(d<minD && d>0.01){ const nx=dx/d, nz=dz/d, ov=(minD-d)/2;
+      a.m.position.x-=nx*ov; a.m.position.z-=nz*ov; b.m.position.x+=nx*ov; b.m.position.z+=nz*ov;
+      const t=(a.vx-b.vx)*nx+(a.vz-b.vz)*nz;
+      if(t>0){ a.vx-=t*nx*.9; a.vz-=t*nz*.9; b.vx+=t*nx*.9; b.vz+=t*nz*.9; } } }
   wheels[0].rotation.z -= vL*dt/.8;          // each wheel spins at ITS OWN speed
   wheels[1].rotation.z -= vR*dt/.8;
   const accel=(v-prevV)/Math.max(dt,1e-4); prevV=v;
