@@ -84,6 +84,8 @@
   <div style="font:10px/1.7 var(--mono);color:var(--dim)">μ <span id="g-mu">—</span> · σ <span id="g-sig">—</span> · <span id="g-time">0:00</span> · best <span id="g-best">—</span><span class="g-goal"> · herd the glowing points inside the limits</span></div>
 </div>
 <div class="hud" id="startchip" style="bottom:70px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--mono);letter-spacing:.1em;border:1px solid var(--acc);color:var(--acc);padding:10px 16px;cursor:pointer;background:rgba(18,21,28,.6)">G — START A SHIFT</div>
+<div class="hud" id="crane-hud" style="bottom:110px;left:50%;transform:translateX(-50%);display:none;text-align:center;font:700 11px/1.9 var(--mono);letter-spacing:.08em;background:rgba(18,21,28,.7);padding:10px 16px;border:1px solid var(--acc)">
+  GANTRY CRANE — <b>A/D</b> trolley · <b>SPACE</b> grab/release · <b>C</b> anti-swing <span id="c-as" style="color:var(--ok)">ON</span> · <b>E</b> exit</div>
 <div class="hud" id="toast" style="top:124px;left:50%;transform:translateX(-50%);font:700 13px/1.6 var(--mono);color:var(--ok);opacity:0;transition:opacity .4s;text-align:center"></div>
 <div id="joy"><div class="nub" id="nub"></div></div>
 
@@ -279,6 +281,44 @@ function chime(){ if(!sndOn||!audio) return; const {ctx}=audio; const o=ctx.crea
   g.gain.setValueAtTime(.12,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.35);
   o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime+.4); }
 
+/* ── THE CRANE YARD (ME475 gantry, phase B2) ── */
+const CRANE_X=220, BEAM_Y=11, CABLE_L=7.2;
+const craneG=new THREE.Group();
+for(const zs of [-25,25]){
+  const legMat=new THREE.MeshStandardMaterial({color:0x3a4152,roughness:.6});
+  const l1=new THREE.Mesh(new THREE.BoxGeometry(.5,BEAM_Y,.5),legMat); l1.position.set(-2.4,BEAM_Y/2,zs); l1.castShadow=true; craneG.add(l1);
+  const l2=new THREE.Mesh(new THREE.BoxGeometry(.5,BEAM_Y,.5),legMat); l2.position.set(2.4,BEAM_Y/2,zs); l2.castShadow=true; craneG.add(l2);
+  const cross=new THREE.Mesh(new THREE.BoxGeometry(5.4,.5,.5),legMat); cross.position.set(0,BEAM_Y-1.4,zs); craneG.add(cross);
+}
+const beam=new THREE.Mesh(new THREE.BoxGeometry(1.4,.8,52),new THREE.MeshStandardMaterial({color:0xd9804f,roughness:.5}));
+beam.position.set(0,BEAM_Y,0); beam.castShadow=true; craneG.add(beam);
+const trolley=new THREE.Mesh(new THREE.BoxGeometry(2,.9,1.6),new THREE.MeshStandardMaterial({color:0x202634,roughness:.4,metalness:.3}));
+trolley.position.set(0,BEAM_Y-.5,0); trolley.castShadow=true; craneG.add(trolley);
+const cable=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1),new THREE.MeshBasicMaterial({color:0xdfe3ec}));
+craneG.add(cable);
+const hook=new THREE.Mesh(new THREE.SphereGeometry(.32,10,10),new THREE.MeshStandardMaterial({color:0xb9c1cc,metalness:.8,roughness:.2}));
+hook.castShadow=true; craneG.add(hook);
+craneG.position.x=CRANE_X; scene.add(craneG);
+// dock pad
+const dock=new THREE.Mesh(new THREE.CylinderGeometry(3.4,3.4,.12,30),new THREE.MeshStandardMaterial({color:0x202634,roughness:.8}));
+dock.position.set(CRANE_X-9,.06,0); dock.receiveShadow=true; scene.add(dock);
+const dockRing=new THREE.Mesh(new THREE.TorusGeometry(3.4,.1,8,40),new THREE.MeshBasicMaterial({color:0xd9804f}));
+dockRing.rotation.x=Math.PI/2; dockRing.position.set(CRANE_X-9,.2,0); scene.add(dockRing);
+// heavy points — crane-only (robot barely nudges them)
+const heavies=[];
+for(const [hx,hz] of [[CRANE_X-2,17],[CRANE_X+3,-18]]){
+  const h=new THREE.Mesh(new THREE.SphereGeometry(1.3,18,18),
+    new THREE.MeshStandardMaterial({color:0x6a7285,roughness:.25,metalness:.85}));
+  h.position.set(hx,1.3,hz); h.castShadow=true; scene.add(h);
+  const hp={m:h, r:1.3, vx:0, vz:0, mass:60, heavy:true, home:{x:hx,z:hz}};
+  pts.push(hp); heavies.push(hp);
+}
+// crane state
+let craneMode=false, zT=0, vTt=0, zTarget=0, theta=0, thetaD=0, carrying=null;
+let antiSwing=true;
+const KpC=6.0, KdC=8.0, KthC=18, KthdC=4.0, GC=22;   // the ME475 sim gains
+function payloadTip(){ return {x:CRANE_X, y:BEAM_Y-.9-Math.cos(theta)*CABLE_L, z:zT+Math.sin(theta)*CABLE_L}; }
+
 /* ── closed-loop PI physics — the real ME375 controllers ──
    plants:  G_LW = 5.87/(0.73s+1) · G_RW = 5.81/(0.69s+1)
    PI:      C_LW = (0.2946s+1.294)/s · C_RW = (0.2767s+1.264)/s  (design response 0.5671 s) */
@@ -298,6 +338,20 @@ addEventListener('keydown',e=>{const k=e.key.toLowerCase(); keys[k]=true;
   if(k==='u'){untuned=!untuned; document.getElementById('spd').nextSibling.textContent = untuned?' ft/s · UNTUNED (pulls left!)':' ft/s · sheepdog myRIO-1900';}
   if(k==='m'){ initAudio(); sndOn=!sndOn; if(audio&&audio.ctx.state==='suspended')audio.ctx.resume(); }
   if(k==='g'){ shift?endShift():startShift(); }
+  if(k==='e'){ if(craneMode){ craneMode=false; document.getElementById('crane-hud').style.display='none'; }
+    else if(Math.hypot(X-(CRANE_X-9),Z)<4.2){ craneMode=true; zTarget=zT;
+      document.getElementById('crane-hud').style.display='block'; toast('DOCKED — you have the crane'); } }
+  if(k==='c' && craneMode){ antiSwing=!antiSwing;
+    const el=document.getElementById('c-as'); el.textContent=antiSwing?'ON':'OFF';
+    el.style.color=antiSwing?'#7fa477':'#d9804f';
+    toast(antiSwing?'anti-swing controller ON — state feedback active':'anti-swing OFF — manual, good luck','#8fa3c8'); }
+  if(k===' ' && craneMode){
+    if(carrying){ const tip=payloadTip();
+      carrying.vz = CABLE_L*thetaD*Math.cos(theta) + vTt; carrying.vx = 0;
+      carrying._drop = tip.y-carrying.r; carrying=null; toast('released','#8fa3c8'); }
+    else { const tip=payloadTip();
+      for(const h of heavies){ if(!h._drop && Math.hypot(h.m.position.z-tip.z, h.m.position.x-tip.x)<2.6 && tip.y<h.r+2.4){
+        carrying=h; toast('grabbed — mind the swing','#7fa477'); chime(); break; } } } }
   if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k))e.preventDefault();});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 
@@ -335,11 +389,15 @@ function loadBest(){ try{ const b=JSON.parse(localStorage.getItem('sheepdog_best
 loadBest();
 function startShift(){
   shift=true; shiftT=0; bestSustain=0; sustain={lvl:0,t:0};
-  gamePts = pts.filter(p=>Math.abs(p.home.x - X) < 90).slice(0,GOAL_N);
-  gamePts.forEach((p,i)=>{ const side = i%2?1:-1;
+  const craneYard = X > 150;
+  const regulars = pts.filter(p=>!p.heavy && Math.abs(p.home.x - X) < 90).slice(0, craneYard?GOAL_N-2:GOAL_N);
+  gamePts = craneYard ? regulars.concat(heavies) : regulars;
+  regulars.forEach((p,i)=>{ const side = i%2?1:-1;
     p.m.position.x = X - 45 + i*8 + (Math.random()*4-2);
     p.m.position.z = side*(15+Math.random()*6);            // start OUTSIDE the limits
     p.vx=0; p.vz=0; });
+  if(craneYard){ heavies[0].m.position.set(CRANE_X-2,1.3,17); heavies[1].m.position.set(CRANE_X+3,1.3,-18);
+    toast('CRANE YARD SHIFT — the steel points need the gantry','#d9804f'); }
   document.getElementById('game').style.display='block';
   document.getElementById('startchip').textContent='G — END SHIFT';
   toast('SHIFT STARTED — bring the process into control');
@@ -397,8 +455,32 @@ function buzz(){ if(!sndOn||!audio) return; const {ctx}=audio; const o=ctx.creat
 const clock=new THREE.Clock();
 function tick(){
   const dt=Math.min(clock.getDelta(),.05);
-  const fwd=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0) - joyY;
-  const turn=(keys['a']||keys['arrowleft']?1:0)-(keys['d']||keys['arrowright']?1:0) - joyX;
+  let fwd=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0) - joyY;
+  let turn=(keys['a']||keys['arrowleft']?1:0)-(keys['d']||keys['arrowright']?1:0) - joyX;
+  if(craneMode){
+    const tin=(keys['d']||keys['arrowright']?1:0)-(keys['a']||keys['arrowleft']?1:0) + joyX;
+    let aT;
+    if(antiSwing){ zTarget=Math.max(-22,Math.min(22,zTarget + tin*14*dt));
+      aT = KpC*(zTarget-zT) - KdC*vTt + KthC*theta + KthdC*thetaD; aT=Math.max(-40,Math.min(40,aT)); }
+    else { aT = tin*30; }
+    vTt += aT*dt; vTt*=.995; zT += vTt*dt;
+    if(zT>22){zT=22;vTt=0;} if(zT<-22){zT=-22;vTt=0;}
+    const thetaDD = -(GC/CABLE_L)*Math.sin(theta) - (aT/CABLE_L)*Math.cos(theta) - .18*thetaD;
+    thetaD += thetaDD*dt; theta += thetaD*dt;
+    trolley.position.z=zT;
+    const tip=payloadTip();
+    hook.position.set(0, tip.y, tip.z);
+    const cy=(BEAM_Y-.9+tip.y)/2;
+    cable.position.set(0, cy, (zT+tip.z)/2);
+    cable.scale.y=Math.max(.1, BEAM_Y-.9-tip.y);
+    cable.rotation.x=Math.atan2(tip.z-zT, BEAM_Y-.9-tip.y);
+    if(carrying){ carrying.m.position.set(tip.x, Math.max(tip.y-.8, carrying.r), tip.z); carrying.vx=0; carrying.vz=0; }
+    fwd=0; turn=0;
+  }
+  // released heavies fall
+  for(const h of heavies){ if(h._drop!==undefined && !isNaN(h._drop)){
+    h.m.position.y=Math.max(h.r, h.m.position.y-14*dt);
+    if(h.m.position.y<=h.r){ delete h._drop; } } }
   const refL = VREF*Math.max(-1,Math.min(1,fwd - .6*turn)) * (untuned?.62:1);
   const refR = VREF*Math.max(-1,Math.min(1,fwd + .6*turn));
   const rough = onRough(X,Z);
@@ -457,13 +539,20 @@ function tick(){
   chassisG.rotation.x = THREE.MathUtils.lerp(chassisG.rotation.x,  w*v*.004,  .15);  // lean in turns
   led.material.emissiveIntensity = 1 + Math.sin(performance.now()/250)*.6;
 
-  /* chase cam — portrait gets a higher, wider view */
-  const portrait = innerHeight > innerWidth;
-  const CD = portrait?18:13, CH = portrait?14:9.5;
-  const cx=X - Math.cos(heading)*CD, cz=Z + Math.sin(heading)*CD;
-  cam.position.lerp(new THREE.Vector3(cx, CH, cz), 1-Math.pow(.001,dt));
-  cam.lookAt(X, 1.2, Z);
+  /* chase cam — portrait gets a higher, wider view; crane gets a side stage */
+  if(craneMode){
+    cam.position.lerp(new THREE.Vector3(CRANE_X-26, 13, zT*.35), 1-Math.pow(.001,dt));
+    cam.lookAt(CRANE_X, 6.5, zT*.6);
+  } else {
+    const portrait = innerHeight > innerWidth;
+    const CD = portrait?18:13, CH = portrait?14:9.5;
+    const cx=X - Math.cos(heading)*CD, cz=Z + Math.sin(heading)*CD;
+    cam.position.lerp(new THREE.Vector3(cx, CH, cz), 1-Math.pow(.001,dt));
+    cam.lookAt(X, 1.2, Z);
+  }
 
+  if(!craneMode && Math.hypot(X-(CRANE_X-9),Z)<4.2 && !window.__dockHinted){
+    window.__dockHinted=true; toast('press E to take the crane','#d9804f'); }
   /* stations proximity */
   let near=null;
   for(const s of stations){ const d=Math.hypot(X-s.x, Z-s.z);
@@ -484,9 +573,9 @@ function tick(){
   for(const p of pts){
     const out = Math.abs(p.m.position.z) > 14;
     if(out !== p._out){ p._out = out;
-      p.m.material.color.set(out?ACC:INK);
+      if(!p.heavy) p.m.material.color.set(out?ACC:INK);
       p.m.material.emissive.set(out?ACC:0x000000);
-      p.m.material.emissiveIntensity = out?.55:0; } }
+      p.m.material.emissiveIntensity = out?(p.heavy?.4:.55):0; } }
 
   if(shift){
     shiftT += dt;
@@ -554,6 +643,8 @@ function tick(){
 tick();
 function fitCam(){ cam.aspect=innerWidth/innerHeight; cam.fov = innerHeight>innerWidth ? 66 : 55; cam.updateProjectionMatrix(); ren.setSize(innerWidth,innerHeight); }
 addEventListener('resize',fitCam); fitCam();
+window.warp=(x,z)=>{X=x;Z=z||0;};   // hidden cheat — also our QA teleport
+window.__crane=()=>JSON.stringify({zT:+zT.toFixed(1),th:+theta.toFixed(2),carry:!!carrying,tip:payloadTip(),h1:heavies[0].m.position.toArray().map(n=>+n.toFixed(1)),d1:heavies[0]._drop});
 </script>
 </body>
 </html>
